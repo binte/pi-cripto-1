@@ -16,7 +16,7 @@ public class Gadgets {
     /**
      * Imprimir um array de bytes, byte a byte
      *
-     * @param array de bytes
+     * @param byte[]
      */
     public static void printByteArray(byte[] array){
 
