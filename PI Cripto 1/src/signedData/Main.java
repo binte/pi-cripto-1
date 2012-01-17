@@ -1,9 +1,13 @@
 package signedData;
 
+import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.cms.CMSProcessable;
+import org.bouncycastle.cms.CMSSignedData;
 
 
 public class Main {
@@ -55,9 +59,20 @@ public class Main {
                     // ler os bytes do ficheiro que contém o resumo de mensagem encriptado
                     encrypted = rw.readByteFile();
 
+
+
+                    
+                    CMSSignedData sd = Gadgets.getSignedData(new FileInputStream(args[1]));
+                    CMSProcessable proc = sd.getSignedContent();
+                    ContentInfo ci = sd.getContentInfo();
+                    System.out.println(new String(ci.getEncoded()));
+
+
+
                     // desencriptar o resumo de mensagem encriptado através da chave privada lida da keystore
                     decrypted = cipher.decifrar(encrypted, RW_KeyStore.export(ksFile, ks_type, key_alias, algorithm));
 
+                    
 
 
                     /* Definir o ficheiro da mensagem, de forma a recebê-la independentemente */
