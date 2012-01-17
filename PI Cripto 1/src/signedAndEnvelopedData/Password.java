@@ -6,6 +6,7 @@ import org.bouncycastle.openssl.PasswordFinder;
 public class Password implements PasswordFinder {
     
     private String password;
+
     
     public Password(String password){
         
