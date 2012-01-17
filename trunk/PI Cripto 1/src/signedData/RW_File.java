@@ -75,10 +75,4 @@ public class RW_File {
         out.write(str);
         out.close();
     }
-    
-    /**
-     * Ler a chave pública do Servidor e do Cliente e concatená-las num ficheiro
-     */
-    
-    
 }
