@@ -203,9 +203,14 @@ public class Gadgets {
 
         return ret;
     }
-    
-    public CMSSignedData getCMSSignedData(byte[] signedData) throws CMSException{
-        CMSSignedData csd = new CMSSignedData(signedData);
-        return csd;
+
+    public static CMSSignedData getSignedData(byte[] signedData) throws Exception {
+
+        return new CMSSignedData(signedData);
+    }
+
+    public static CMSSignedData getSignedData(InputStream is) throws Exception {
+
+        return new CMSSignedData(is);
     }
 }
