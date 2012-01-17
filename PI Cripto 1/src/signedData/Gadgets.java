@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOError;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyPair;
 
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 
@@ -199,5 +202,10 @@ public class Gadgets {
         while(ret == null || ret.length == 0);
 
         return ret;
+    }
+    
+    public CMSSignedData getCMSSignedData(byte[] signedData) throws CMSException{
+        CMSSignedData csd = new CMSSignedData(signedData);
+        return csd;
     }
 }
