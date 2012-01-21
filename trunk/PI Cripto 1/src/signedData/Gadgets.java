@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
 
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
