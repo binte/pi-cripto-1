@@ -1,5 +1,6 @@
-package signedData;
+package teste;
 
+import signedData.*;
 import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
@@ -201,5 +202,15 @@ public class Gadgets {
         while(ret == null || ret.length == 0);
 
         return ret;
+    }
+
+    public static CMSSignedData getSignedData(byte[] signedData) throws Exception {
+
+        return new CMSSignedData(signedData);
+    }
+
+    public static CMSSignedData getSignedData(InputStream is) throws Exception {
+
+        return new CMSSignedData(is);
     }
 }
