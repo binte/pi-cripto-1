@@ -102,6 +102,8 @@ import java.io.FileInputStream;
                     System.out.println("Content:");
 
                     Object cont = content.getContent();
+                    
+                    System.out.println(content.getContentType());
 
                     if (cont instanceof  String) {
                         System.out.println((String) cont);
