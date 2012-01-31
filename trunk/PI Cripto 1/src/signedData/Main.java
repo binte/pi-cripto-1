@@ -1,9 +1,19 @@
 package signedData;
 
+import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.mail.smime.SMIMESigned;
 
 
 public class Main {
@@ -13,13 +23,18 @@ public class Main {
         String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm = "RSA";
         byte[] encrypted, decrypted, digest;
         Cifra cipher = new Cifra(algorithm);
-        Digest dgst = new Digest("SHA-256", 32);
-        RW_File rw;
+        Digest dgst;
         X509Certificate cert;
-
+        Properties props;
+        Session session;
+        MimeMessage msg;
+        SMIMESigned signed;
+        SignerInformationStore signer;
+        Collection c;
+        Iterator it;
 
         // Se tiverem sido passados três parâmetros ao programa
-        if( args.length == 3) {
+        if( args.length == 2) {
 
             /**
              * 0 - Path do ficheiro que contém o certificado do emissor (formato DER)
@@ -49,29 +64,50 @@ public class Main {
                     /***********************************/
 
 
+                    props = System.getProperties();
+                    session = Session.getDefaultInstance(props);
 
-                    rw = new RW_File(args[1]);
+                    msg = new MimeMessage(session, new FileInputStream(args[1]));
+                    signed = new SMIMESigned((MimeMultipart) msg.getContent());
+
+                    signer = signed.getSignerInfos();
+
+                    c = signer.getSigners();
+
+                    
+                    it = c.iterator();
+
+                    while(it.hasNext()) {
+
+                        SignerInformation s = (SignerInformation) it.next();
+
+                        algorithm = s.getEncryptionAlgOID();
+
+                        encrypted = s.getEncodedSignedAttributes();
+
+                        dgst = new Digest(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()));
+
 
                     // ler os bytes do ficheiro que contém o resumo de mensagem encriptado
-                    encrypted = rw.readByteFile();
+                    //encrypted = rw.readByteFile();
 
                     // desencriptar o resumo de mensagem encriptado através da chave privada lida da keystore
                     decrypted = cipher.decifrar(encrypted, RW_KeyStore.export(ksFile, ks_type, key_alias, algorithm));
 
-
+                    
 
                     /* Definir o ficheiro da mensagem, de forma a recebê-la independentemente */
-                    rw.setFile(args[2]);
+                    //rw.setFile(args[2]);
 
                     /* Calcular o resumo da mensagem */
-                    digest = dgst.computeMessageDigest(rw.readByteFile());
+                    digest = dgst.computeMessageDigest(((String)signed.getContent().getContent()).getBytes());
 
 
                     /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
                     if( MessageDigest.isEqual(decrypted, digest) )
                         System.out.println("check");
                     else
-                        System.out.println("fail");
+                        System.out.println("fail");}
                 }
                 else
                     throw new Exception("Invalid Certificate");
