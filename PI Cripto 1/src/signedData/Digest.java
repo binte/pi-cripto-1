@@ -29,6 +29,17 @@ public class Digest {
         this.length = length;
     }
 
+    public Digest(String algorithm) {
+
+        this.algorithm = algorithm;
+        this.length = -1;
+    }
+
+
+    public String getAlgorithm() {
+
+        return this.algorithm;
+    }
 
     public int getLength() {
 
@@ -48,7 +59,11 @@ public class Digest {
         /* Criar uma instância da classe Message Digest para calcular um resumo de uma mensagem
          através do algoritmo passado à instância */
         MessageDigest dgst = MessageDigest.getInstance(this.algorithm);
-        
+
+        // Se ao criar um objecto desta classe não for especificado o tamanho do algoritmo, 
+        if(this.length == -1)  // modificar ao instanciar um MessageDigest
+            this.length = dgst.getDigestLength();
+
         // Fornecer ao objecto Message Digest instanciado em cima a mensagem da qual se pretende obter um resumo
         dgst.update(message);
 
