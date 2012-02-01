@@ -3,6 +3,7 @@ package signedData;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
@@ -20,9 +21,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm = "RSA";
-        byte[] encrypted, decrypted, digest;
-        Cifra cipher = new Cifra(algorithm);
+        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, message;
+        byte[] encrypted, encrypted2,  decrypted, digest;
+        Cifra cipher;
         Digest dgst;
         X509Certificate cert;
         Properties props;
@@ -38,8 +39,7 @@ public class Main {
 
             /**
              * 0 - Path do ficheiro que contém o certificado do emissor (formato DER)
-             * 1 - Path do ficheiro que contém o resumo de mensagem encriptado
-             * 2 - Path do ficheiro que contém a mensagem
+             * 1 - Path do ficheiro que contém o conteúdo SMIME
              */
 
 
@@ -74,40 +74,55 @@ public class Main {
 
                     c = signer.getSigners();
 
-                    
+
                     it = c.iterator();
 
                     while(it.hasNext()) {
 
+                        /* Isolar a informação do signatário */
                         SignerInformation s = (SignerInformation) it.next();
 
-                        algorithm = s.getEncryptionAlgOID();
+                        /* Ler o identificador do algoritmo utilizado para encriptar o resumo de mensagem */
+                        algorithm = Gadgets.getBC_Algorithm(s.getEncryptionAlgOID());
 
-                        encrypted = s.getEncodedSignedAttributes();
+                        /* Ler os bytes da assinatura (resumo de mensagem) encriptado */
+                        encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
 
+                        /* Guardar a mensagem em claro */
+                        message = (String) signed.getContent().getContent();
+
+
+RW_File rw = new RW_File("encrypted");
+rw.writeFile(encrypted);
+
+rw.setFile("encrypted_ssl");
+encrypted2 = rw.readByteFile();
+
+System.out.println(Arrays.equals(encrypted, encrypted2));
+
+//Sign sig = new Sign(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()), algorithm);
+
+//System.out.println(sig.verifySign(cert.getPublicKey(), message.getBytes(), encrypted2));
+
+                        /* Criar uma nova instância da classe que vai calcular o resumo da mensagem recebida em claro */
                         dgst = new Digest(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()));
 
+                        /* especificar o algoritmo a ser utilizado na operação de cifragem */
+                        cipher = new Cifra(algorithm);
 
-                    // ler os bytes do ficheiro que contém o resumo de mensagem encriptado
-                    //encrypted = rw.readByteFile();
+                        // decifrar o resumo de mensagem cifrado através da chave pública lida do certificado do emissor
+                        decrypted = cipher.decifrar(encrypted2, cert.getPublicKey());
 
-                    // desencriptar o resumo de mensagem encriptado através da chave privada lida da keystore
-                    decrypted = cipher.decifrar(encrypted, RW_KeyStore.export(ksFile, ks_type, key_alias, algorithm));
-
-                    
-
-                    /* Definir o ficheiro da mensagem, de forma a recebê-la independentemente */
-                    //rw.setFile(args[2]);
-
-                    /* Calcular o resumo da mensagem */
-                    digest = dgst.computeMessageDigest(((String)signed.getContent().getContent()).getBytes());
+                        /* Calcular o resumo da mensagem (texto limpo) */
+                        digest = dgst.computeMessageDigest(((String)signed.getContent().getContent()).getBytes());
 
 
-                    /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
-                    if( MessageDigest.isEqual(decrypted, digest) )
-                        System.out.println("check");
-                    else
-                        System.out.println("fail");}
+                        /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
+                        if( MessageDigest.isEqual(decrypted, digest) )
+                            System.out.println("check");
+                        else
+                            System.out.println("fail");
+                    }
                 }
                 else
                     throw new Exception("Invalid Certificate");

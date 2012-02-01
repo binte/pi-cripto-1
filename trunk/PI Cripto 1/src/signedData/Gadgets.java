@@ -7,10 +7,9 @@ import java.io.IOError;
 import java.io.IOException;
 import java.security.KeyPair;
 
+import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
-import org.bouncycastle.asn1.kisa.KISAObjectIdentifiers;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
-import org.bouncycastle.asn1.ntt.NTTObjectIdentifiers;
 import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.teletrust.TeleTrusTObjectIdentifiers;
@@ -21,25 +20,22 @@ import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 
 public class Gadgets {
 
-    public static final String DES_EDE3_CBC = PKCSObjectIdentifiers.des_EDE3_CBC.getId();
-    public static final String RC2_CBC = PKCSObjectIdentifiers.RC2_CBC.getId();
-    public static final String IDEA_CBC = "1.3.6.1.4.1.188.7.1.1.2";
-    public static final String CAST5_CBC = "1.2.840.113533.7.66.10";
-    public static final String AES128_CBC = NISTObjectIdentifiers.id_aes128_CBC.getId();
-    public static final String AES192_CBC = NISTObjectIdentifiers.id_aes192_CBC.getId();
-    public static final String AES256_CBC = NISTObjectIdentifiers.id_aes256_CBC.getId();
-    public static final String CAMELLIA128_CBC = NTTObjectIdentifiers.id_camellia128_cbc.getId();
-    public static final String CAMELLIA192_CBC = NTTObjectIdentifiers.id_camellia192_cbc.getId();
-    public static final String CAMELLIA256_CBC = NTTObjectIdentifiers.id_camellia256_cbc.getId();
-    public static final String SEED_CBC = KISAObjectIdentifiers.id_seedCBC.getId();
-    public static final String DES_EDE3_WRAP = PKCSObjectIdentifiers.id_alg_CMS3DESwrap.getId();
-    public static final String AES128_WRAP = NISTObjectIdentifiers.id_aes128_wrap.getId();
-    public static final String AES256_WRAP = NISTObjectIdentifiers.id_aes256_wrap.getId();
-    public static final String CAMELLIA128_WRAP = NTTObjectIdentifiers.id_camellia128_wrap.getId();
-    public static final String CAMELLIA192_WRAP = NTTObjectIdentifiers.id_camellia192_wrap.getId();
-    public static final String CAMELLIA256_WRAP = NTTObjectIdentifiers.id_camellia256_wrap.getId();
-    public static final String SEED_WRAP = KISAObjectIdentifiers.id_npki_app_cmsSeed_wrap.getId();
-    public static final String ECDH_SHA1KDF = X9ObjectIdentifiers.dhSinglePass_stdDH_sha1kdf_scheme.getId();
+    public static final String pkcs_1 = "1.2.840.113549.1.1";
+
+    public static final DERObjectIdentifier rsaEncryption = new DERObjectIdentifier(pkcs_1 + ".1");
+    public static final DERObjectIdentifier md2WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".2");
+    public static final DERObjectIdentifier md4WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".3");
+    public static final DERObjectIdentifier md5WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".4");
+    public static final DERObjectIdentifier sha1WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".5");
+    public static final DERObjectIdentifier srsaOAEPEncryptionSET = new DERObjectIdentifier(pkcs_1 + ".6");
+    public static final DERObjectIdentifier id_RSAES_OAEP = new DERObjectIdentifier(pkcs_1 + ".7");
+    public static final DERObjectIdentifier id_mgf1 = new DERObjectIdentifier(pkcs_1 + ".8");
+    public static final DERObjectIdentifier id_pSpecified = new DERObjectIdentifier(pkcs_1 + ".9");
+    public static final DERObjectIdentifier id_RSASSA_PSS = new DERObjectIdentifier(pkcs_1 + ".10");
+    public static final DERObjectIdentifier sha256WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".11");
+    public static final DERObjectIdentifier sha384WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".12");
+    public static final DERObjectIdentifier sha512WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".13");
+    public static final DERObjectIdentifier sha224WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".14");
 
     public static final String DIGEST_SHA1 = OIWObjectIdentifiers.idSHA1.getId();
     public static final String DIGEST_MD5 = PKCSObjectIdentifiers.md5.getId();
@@ -251,10 +247,29 @@ public class Gadgets {
         return ret;
     }
 
-    //public static String getBC_Algorithm(String algOID) {
+    public static String getBC_Algorithm(String algOID) {
 
+        String algorithm = new String();
+        
+        if (algOID.equals(rsaEncryption.toString()))
+            algorithm = "rsa";
+        else if (algOID.equals(md2WithRSAEncryption.toString()))
+            algorithm = "MD2WithRSAEncryption";
+        else if (algOID.equals(md4WithRSAEncryption.toString()))
+            algorithm = "MD4WithRSAEncryption";
+        else if (algOID.equals(md5WithRSAEncryption.toString()))
+            algorithm = "MD5WithRSAEncryption";
+        else if (algOID.equals(sha1WithRSAEncryption.toString()))
+            algorithm = "SHA1WithRSAEncryption";
+        else if (algOID.equals(sha256WithRSAEncryption.toString()))
+            algorithm = "SHA256WithRSAEncryption";
+        else if (algOID.equals(sha384WithRSAEncryption.toString()))
+            algorithm = "SHA384WithRSAEncryption";
+        else
+            algorithm = "unknown";
 
-//    }
+        return algorithm;
+    }
 
     public static String getBC_DigestAlgorithm(String algOID) {
 
@@ -278,5 +293,14 @@ public class Gadgets {
             digestAlgorithm = "unknown";
 
         return digestAlgorithm;
+    }
+
+    public static String concatDigestWithEncryptionAlgorithm(String dgst_algorithm, String algorithm){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(dgst_algorithm + "With" + algorithm);
+
+        return sb.toString();
     }
 }
