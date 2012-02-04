@@ -11,6 +11,7 @@
 
 package PKCS7;
 
+import java.util.StringTokenizer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import signedData.Gadgets;
 
@@ -39,6 +40,9 @@ public class ContentType {
     @Override
     public String toString() {
 
-        return "OBJECT IDENTIFIER ::= { pkcs-7 " + this.objID.toString() + " }";
+        StringBuilder sb = new StringBuilder(this.objID.toString());
+        StringTokenizer st = new StringTokenizer(sb.reverse().toString());
+
+        return "OBJECT IDENTIFIER ::= { pkcs-7 " + st.nextToken(".") + " }";
     }
 }

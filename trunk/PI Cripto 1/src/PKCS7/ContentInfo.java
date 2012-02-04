@@ -1,25 +1,36 @@
 package PKCS7;
 
+
 public class ContentInfo {
 
     private ContentType contentType;
-    private int version;
+    private Content content;
 
 
-    public ContentInfo(ContentType contentType, int version) {
+    public ContentInfo(ContentType contentType, Content content) {
 
         this.contentType = contentType;
-        this.version = version;
+        this.content = content;
     }
 
 
+    /***
+     * Retorna um objecto ContentType, também definido nesta implementação do standard do PKCS7
+     *
+     * @return ContentType
+     */
     public ContentType getContentType() {
 
         return this.contentType;
     }
 
-    public int getVersion() {
+    /***
+     * Retorna um objecto Content, também definido nesta implementação do standard do PKCS7
+     *
+     * @return Content
+     */
+    public Content getContent() {
 
-        return this.version;
+        return this.getContent();
     }
 }
