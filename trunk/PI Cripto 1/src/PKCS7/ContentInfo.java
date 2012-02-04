@@ -1,3 +1,8 @@
+/***
+ * ContentInfo ::= SEQUENCE { contentType ContentType,
+ *                            content [0] EXPLICIT ANY DEFINED BY contentType OPTIONAL }
+ */
+
 package PKCS7;
 
 
