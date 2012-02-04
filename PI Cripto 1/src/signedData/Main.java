@@ -76,6 +76,8 @@ public class Main {
 
 PKCS7.ContentType pk = new PKCS7.ContentType(signed.getContentInfo().getContentType());
 System.out.println(pk.toString());
+
+
                     it = c.iterator();
 
                     while(it.hasNext()) {
