@@ -1,5 +1,5 @@
 /***
- * Identifica o tipo de objecto, podendo ser um dos seguintes tipos de content:
+ * Identifica o tipo de objecto, podendo ser um dos seguintes tipos de objectos Content:
  * 
  * data -> data OBJECT IDENTIFIER ::= { pkcs-7 1 }
  * signedData -> signedData OBJECT IDENTIFIER ::= { pkcs-7 2 }
