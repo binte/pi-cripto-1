@@ -21,6 +21,7 @@ import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 public class Gadgets {
 
     public static final String pkcs_1 = "1.2.840.113549.1.1";
+    public static final String pkcs_7 = "1.2.840.113549.1.7";
 
     public static final DERObjectIdentifier rsaEncryption = new DERObjectIdentifier(pkcs_1 + ".1");
     public static final DERObjectIdentifier md2WithRSAEncryption = new DERObjectIdentifier(pkcs_1 + ".2");
@@ -57,6 +58,15 @@ public class Gadgets {
     private static final String CERTIFICATE_MANAGEMENT_CONTENT = "application/pkcs7-mime; name=smime.p7c; smime-type=certs-only";
     private static final String DETACHED_SIGNATURE_TYPE = "application/pkcs7-signature; name=smime.p7s; smime-type=signed-data";
     private static final String ENCAPSULATED_SIGNED_CONTENT_TYPE = "application/pkcs7-mime; name=smime.p7m; smime-type=signed-data";
+
+    private static final String data = pkcs_7 + ".1";
+    private static final String signedData = pkcs_7 + ".2";
+    private static final String envelopedData = pkcs_7 + ".3";
+    private static final String signedAndEnvelopedData = pkcs_7 + ".4";
+    private static final String digestedData = pkcs_7 + ".5";
+    private static final String encryptedData = pkcs_7 + ".6";
+
+
 
     
     /**
@@ -293,6 +303,28 @@ public class Gadgets {
             digestAlgorithm = "unknown";
 
         return digestAlgorithm;
+    }
+
+    public static String getContentType(String contentTypeOID) {
+
+        String contentType;
+
+        if(contentTypeOID.equals(data))
+            contentType = "data";
+        else if(contentTypeOID.equals(signedData))
+            contentType = "signedData";
+        else if(contentTypeOID.equals(envelopedData))
+            contentType = "envelopedData";
+        else if(contentTypeOID.equals(signedAndEnvelopedData))
+            contentType = "signedAndEnveloped";
+        else if(contentTypeOID.equals(digestedData))
+            contentType = "digestedData";
+        else if(contentTypeOID.equals(encryptedData))
+            contentType = "encryptedData";
+        else
+            contentType = "unknown";
+
+        return contentType;
     }
 
     public static String concatDigestWithEncryptionAlgorithm(String dgst_algorithm, String algorithm){
