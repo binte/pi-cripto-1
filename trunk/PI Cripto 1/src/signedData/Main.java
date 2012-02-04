@@ -76,7 +76,7 @@ public class Main {
                     c = signer.getSigners();
 
 PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
-PKCS7.SignedData signedData = new PKCS7SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
+PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
 PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
 
 System.out.println(contentInfo.toString());
