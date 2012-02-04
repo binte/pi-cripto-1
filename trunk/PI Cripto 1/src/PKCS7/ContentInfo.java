@@ -38,4 +38,17 @@ public class ContentInfo {
 
         return this.getContent();
     }
+
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.contentType.toString()); 
+
+        sb.append(this.content.toString());
+
+        return sb.toString();
+    }
 }

@@ -18,7 +18,6 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 public class SignedData extends Content {
 
     private int version;
-    private AlgorithmIdentifier algID;
     private AlgorithmIdentifier dgstAlgID;
     private ContentInfo contentInfo;
     private ExtendedCertificateOrCertificate certificate;
@@ -26,10 +25,9 @@ public class SignedData extends Content {
     private SignerInfo signerInfo;
 
     
-    public SignedData(int version, AlgorithmIdentifier algID, AlgorithmIdentifier dgstAlgID, ContentInfo contentInfo, SignerInfo signerInfo) {
+    public SignedData(int version, AlgorithmIdentifier dgstAlgID, ContentInfo contentInfo, SignerInfo signerInfo) {
 
         super(version);
-        this.algID = algID;
         this.dgstAlgID = dgstAlgID;
         this.contentInfo = contentInfo;
         this.signerInfo = signerInfo;

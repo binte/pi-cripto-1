@@ -1,5 +1,6 @@
 package signedData;
 
+import PKCS7.SignedData;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
@@ -74,9 +75,11 @@ public class Main {
 
                     c = signer.getSigners();
 
-PKCS7.ContentType pk = new PKCS7.ContentType(signed.getContentInfo().getContentType());
-System.out.println(pk.toString());
+PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
+PKCS7.SignedData signedData = new PKCS7SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
+PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
 
+System.out.println(contentInfo.toString());
 
                     it = c.iterator();
 
