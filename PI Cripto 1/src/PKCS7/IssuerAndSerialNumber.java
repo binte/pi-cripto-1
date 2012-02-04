@@ -1,8 +1,8 @@
 /***
  * Classe que identifica o certificado 
  * 
- * IssuerAndSerialNumber ::= SEQUENCE { issuer,
- *                                      serialNumber }
+ * IssuerAndSerialNumber ::= SEQUENCE { Issuer issuer,
+ *                                      SerialNumber serialNumber }
  */
 
 package PKCS7;
@@ -18,5 +18,17 @@ public class IssuerAndSerialNumber {
 
         this.issuer = issuer;
         this.serialNumber = serialNumber;
+    }
+
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("IssuerAndSerialNumber ::= SEQUENCE { Issuer " + this.issuer + ",\n");
+        sb.append("SerialNumber " + this.serialNumber + " }\n");
+
+        return sb.toString();
     }
 }
