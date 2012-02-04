@@ -6,7 +6,8 @@
  *                           digestAlgorithm DigestAlgorithmIdentifier,
  *                           authenticatedAttributes [0] IMPLICIT Attributes OPTIONAL,
  *                           digestEncryptionAlgorithm DigestEncryptionAlgorithmIdentifier,
- *                           encryptedDigest EncryptedDigest, unauthenticatedAttributes [1] IMPLICIT Attributes OPTIONAL }
+ *                           encryptedDigest EncryptedDigest,
+ *                           unauthenticatedAttributes [1] IMPLICIT Attributes OPTIONAL }
  */
 
 package PKCS7;
@@ -37,5 +38,29 @@ public class SignerInfo {
         this.dgstEncryptionAlgorithm = dgstEncryptionAlgorithm;
         this.encryptedDigest = encryptedDigest;
         this.unauthenticatedAttributes = unauthenticatedAttributes;
+    }
+
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SignerInfo ::= SEQUENCE { Version " + this.version + ",\n");
+        sb.append("                          issuerAndSerialNumber " + this.isn.toString() + ",\n");
+        sb.append("digestAlgorithm " + this.dgstAlgID.toString() + ",\n");
+
+        if(this.authenticatedAttributes != null)
+            sb.append("authenticatedAttributes " + this.authenticatedAttributes.toString() + ",\n");
+
+        sb.append("digestEncryptionAlgorithm " + this.dgstEncryptionAlgorithm.toString() + ",\n");
+        sb.append("encryptedDigest: *********************,\n");
+
+        if(this.unauthenticatedAttributes != null)
+            sb.append("unauthenticatedAttributes: " + this.unauthenticatedAttributes.toString());
+
+        sb.append(" }\n");
+
+        return sb.toString();
     }
 }
