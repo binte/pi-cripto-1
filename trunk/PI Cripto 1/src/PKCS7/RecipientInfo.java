@@ -39,10 +39,10 @@ public class RecipientInfo {
     
     public String toString(){
         StringBuilder st = new StringBuilder("RecipientInfo ::= SEQUENCE { version");
-        st.append(version+"\n");
-        st.append("issuerAndSerialNumber"+issuerAndSerialNumber.toString()+"\n");
-        st.append("keyEncryptionAlgorithm"+keyAlgorithmIdentifier.toString()+"\n");
-        st.append("encryptedKey "+new String(encryptedKey)+"\n");
+        st.append(version+",\n");
+        st.append("issuerAndSerialNumber "+issuerAndSerialNumber.toString()+",\n");
+        st.append("keyEncryptionAlgorithm "+keyAlgorithmIdentifier.toString()+",\n");
+        st.append("encryptedKey "+new String(encryptedKey)+",\n");
     
         return st.toString();
     }

@@ -48,7 +48,7 @@ public class EncryptedData extends Content{
     
     public String toString(){
         StringBuilder st = new StringBuilder("EncryptedData ::= SEQUENCE { version");
-        st.append(version+"\n");
+        st.append(version+",\n");
         st.append(encryptedContentInfo.toString());
         return st.toString();
     }
