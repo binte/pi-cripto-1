@@ -46,6 +46,10 @@ public class EncryptedData extends Content{
         encryptedContentInfo = eci;
     }
     
-    
-    
+    public String toString(){
+        StringBuilder st = new StringBuilder("EncryptedData ::= SEQUENCE { version");
+        st.append(version+"\n");
+        st.append(encryptedContentInfo.toString());
+        return st.toString();
+    }
 }
