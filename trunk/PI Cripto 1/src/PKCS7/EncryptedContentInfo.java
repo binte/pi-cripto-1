@@ -42,4 +42,12 @@ public class EncryptedContentInfo {
         contentEncryptionAlgorithm = ai;
         encryptedContent = ec;
     }
+    
+    public String toString(){
+        StringBuilder sb = new StringBuilder("EncryptedContentInfo ::= SEQUENCE {contentType,\n");
+        sb.append("contentEncryptionAlgorithm"+contentEncryptionAlgorithm.toString()+"\n");
+        if(encryptedContent!=null) sb.append("encryptedContent"+ new String(encryptedContent.toString())+"\n");
+        
+        return sb.toString();
+    }
 }
