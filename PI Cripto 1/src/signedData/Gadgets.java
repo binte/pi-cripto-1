@@ -63,12 +63,12 @@ public class Gadgets {
     private static final String DETACHED_SIGNATURE_TYPE = "application/pkcs7-signature; name=smime.p7s; smime-type=signed-data";
     private static final String ENCAPSULATED_SIGNED_CONTENT_TYPE = "application/pkcs7-mime; name=smime.p7m; smime-type=signed-data";
 
-    private static final String data = pkcs_7 + ".1";
-    private static final String signedData = pkcs_7 + ".2";
-    private static final String envelopedData = pkcs_7 + ".3";
-    private static final String signedAndEnvelopedData = pkcs_7 + ".4";
-    private static final String digestedData = pkcs_7 + ".5";
-    private static final String encryptedData = pkcs_7 + ".6";
+    public static final String data = pkcs_7 + ".1";
+    public static final String signedData = pkcs_7 + ".2";
+    public static final String envelopedData = pkcs_7 + ".3";
+    public static final String signedAndEnvelopedData = pkcs_7 + ".4";
+    public static final String digestedData = pkcs_7 + ".5";
+    public static final String encryptedData = pkcs_7 + ".6";
 
 
 
