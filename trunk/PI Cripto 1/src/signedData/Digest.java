@@ -21,18 +21,21 @@ public class Digest {
 
     private String algorithm;   // algoritmo de resumo de mensagem
     private int length;         // tamanho (em bits) do array associado à geração dum MessageDigest com o algoritmo dado
+    private String provider;
 
 
-    public Digest(String algorithm, int length){
+    public Digest(String algorithm, int length, String provider){
 
         this.algorithm = algorithm;
         this.length = length;
+        this.provider = provider;
     }
 
-    public Digest(String algorithm) {
+    public Digest(String algorithm, String provider) {
 
         this.algorithm = algorithm;
         this.length = -1;
+        this.provider = provider;
     }
 
 
@@ -58,7 +61,7 @@ public class Digest {
 
         /* Criar uma instância da classe Message Digest para calcular um resumo de uma mensagem
          através do algoritmo passado à instância */
-        MessageDigest dgst = MessageDigest.getInstance(this.algorithm);
+        MessageDigest dgst = MessageDigest.getInstance(this.algorithm, this.provider);
 
         // Se ao criar um objecto desta classe não for especificado o tamanho do algoritmo, 
         if(this.length == -1)  // modificar ao instanciar um MessageDigest
