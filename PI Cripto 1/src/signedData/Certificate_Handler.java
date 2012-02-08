@@ -3,6 +3,7 @@ package signedData;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.Provider;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathValidator;
 import java.security.cert.CertPathValidatorException;
@@ -17,11 +18,11 @@ import java.util.Collections;
 
 public class Certificate_Handler {
 
-    public static boolean verifyCertificate(X509Certificate ca_cert, X509Certificate cert) throws Exception {
+    public static boolean verifyCertificate(X509Certificate ca_cert, X509Certificate cert, Provider provider) throws Exception {
 
         boolean valid = false;
 
-        CertPathValidator cpv = CertPathValidator.getInstance("PKIX");
+        CertPathValidator cpv = CertPathValidator.getInstance("PKIX", provider);
 
         // TrustAnchor representa os pressupostos de confiança que se aceita como válidos
         // (neste caso, unicamente a CA que emitiu os certificados)
@@ -51,9 +52,9 @@ public class Certificate_Handler {
 
         } catch (CertPathValidatorException cpve) {
 
-            throw new Exception("Validation failure: " + cpve +"\n"+
-
-                                "Posição do certificado causador do erro: "+ cpve.getIndex());
+            throw new Exception("Validation failure: " + cpve +"\n" +
+                                "Posicao do certificado causador do erro: " + cpve.getIndex() + "\n" +
+                                "Causa do erro: " + cpve.getCause().getMessage());
         }
 
         return valid;

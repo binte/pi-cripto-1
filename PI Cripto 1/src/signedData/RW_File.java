@@ -22,6 +22,12 @@ public class RW_File {
     }
 
 
+    public void setFile(String file){
+
+        this.file=file;
+    }
+
+
     /**
      * Ler um ficheiro de bytes e retorná-los
      *
@@ -58,10 +64,6 @@ public class RW_File {
         OutputStream out = new FileOutputStream(this.file);
         out.write(code);
         out.close();
-    }
-    
-    public void setFile(String file){
-        this.file=file;
     }
 
     /**

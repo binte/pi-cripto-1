@@ -20,6 +20,10 @@ import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 
 public class Gadgets {
 
+    private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
+
+
+
     public static final String pkcs_1 = "1.2.840.113549.1.1";
     public static final String pkcs_7 = "1.2.840.113549.1.7";
 
@@ -91,20 +95,18 @@ public class Gadgets {
      *
      * @return String no formato hexadecimal
      */
-    public static String asHex(byte buf[]) {
+    public static String asHex(byte[] buf) {
 
         int i;
-        StringBuffer strbuf = new StringBuffer(buf.length * 2);
-
-        for (i = 0; i < buf.length; i++) {
-
-            if(((int) buf[i] & 0xff) < 0x10)
-                strbuf.append("0");
-
-            strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+        char[] chars = new char[2 * buf.length];
+        
+        for (i=0 ; i < buf.length ; i++) {
+            
+            chars[2 * i] = HEX_CHARS[(buf[i] & 0xF0) >>> 4];
+            chars[2 * i + 1] = HEX_CHARS[buf[i] & 0x0F];
         }
-
-        return strbuf.toString();
+        
+        return new String(chars);
     }
 
     /**

@@ -3,6 +3,8 @@ package signedData;
 import PKCS7.SignedData;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
+import java.security.Security;
+import java.security.cert.CertStore;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,13 +18,15 @@ import javax.mail.internet.MimeMultipart;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.mail.smime.SMIMESigned;
+import org.bouncycastle.util.Store;
+import sun.misc.BASE64Encoder;
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, message;
+        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, message, provider = "BC";
         byte[] encrypted, encrypted2,  decrypted, digest;
         Cifra cipher;
         Digest dgst;
@@ -31,62 +35,64 @@ public class Main {
         Session session;
         MimeMessage msg;
         SMIMESigned signed;
-        SignerInformationStore signer;
+        SignerInformationStore signers;
+        SignerInformation s;
+        CertStore certs;
         Collection c;
-        Iterator it;
+        Iterator it, certIt;
 
-        // Se tiverem sido passados três parâmetros ao programa
-        if( args.length == 2) {
+        
+        // Se tiver sido passado um parâmetro ao programa
+        if( args.length == 1) {
 
             /**
-             * 0 - Path do ficheiro que contém o certificado do emissor (formato DER)
-             * 1 - Path do ficheiro que contém o conteúdo SMIME
+             * 0 - Path do ficheiro que contém o conteúdo SMIME
              */
 
 
             try {
 
+                props = System.getProperties();
+                session = Session.getDefaultInstance(props);
 
-                /************************************/
-                /* Receber o Certificado do Emissor */
-                /************************************/
+                msg = new MimeMessage(session, new FileInputStream(args[0]));
+                signed = new SMIMESigned((MimeMultipart) msg.getContent());
+
+                /* Colocar a informação dos vários signatários (contida no pacote SMIME) numa Collection,
+                 de modo a processar a informação de cada um individualmente */
+                signers = signed.getSignerInfos();
+                c = signers.getSigners();
+
+                /* Ler os certificados do pacote SMIME */
+                certs =   (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
+
+//PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
+//PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
+//PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
+
+//System.out.println(contentInfo.toString());
 
 
-                /* Criar um objecto com o Certificado do Emissor */
-                cert = Certificate_Handler.getCertFromFile(args[0]);
 
-                /* Verificar o certificado do emissor com a CA */
-                if(Certificate_Handler.verifyCertificate(RW_KeyStore.getCertificate(ksFile, ks_type, cert_alias), cert)) {
+                /* Iterar os signatários */
+                it = c.iterator();
 
+                while(it.hasNext()) {
 
-
-                    /***********************************/
-                    /* Enviar o Certificado ao Emissor */
-                    /***********************************/
+                    /* Isolar a informação do signatário */
+                    s = (SignerInformation) it.next();
 
 
-                    props = System.getProperties();
-                    session = Session.getDefaultInstance(props);
+                    /* Colocar as cadeias de certificados dos signatários contidos no pacote SMIME numa Collection */
+                    Collection certCollection = certs.getCertificates(s.getSID());
 
-                    msg = new MimeMessage(session, new FileInputStream(args[1]));
-                    signed = new SMIMESigned((MimeMultipart) msg.getContent());
+                    /* Iterar os certificados da cadeia de certificados que está a ser processada */
+                    certIt = certCollection.iterator();
+                    cert = (X509Certificate) certIt.next();
 
-                    signer = signed.getSignerInfos();
 
-                    c = signer.getSigners();
-
-PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
-PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
-PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
-
-System.out.println(contentInfo.toString());
-
-                    it = c.iterator();
-
-                    while(it.hasNext()) {
-
-                        /* Isolar a informação do signatário */
-                        SignerInformation s = (SignerInformation) it.next();
+                    /* Verificar o certificado do emissor com a CA */
+                    if(Certificate_Handler.verifyCertificate(RW_KeyStore.getCertificate(ksFile, ks_type, cert_alias), cert, Security.getProvider(provider))) {
 
                         /* Ler o identificador do algoritmo utilizado para encriptar o resumo de mensagem */
                         algorithm = Gadgets.getBC_Algorithm(s.getEncryptionAlgOID());
@@ -94,6 +100,7 @@ System.out.println(contentInfo.toString());
                         /* Ler os bytes da assinatura (resumo de mensagem) encriptado */
                         encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
 
+                        
                         /* Guardar a mensagem em claro */
                         message = (String) signed.getContent().getContent();
 
@@ -104,7 +111,20 @@ rw.writeFile(encrypted);
 rw.setFile("encrypted_ssl");
 encrypted2 = rw.readByteFile();
 
-System.out.println(Arrays.equals(encrypted, encrypted2));
+//BASE64Encoder encoder = new BASE64Encoder();
+//String encoded = encoder.encode(encrypted);
+
+//BASE64Encoder encoder2 = new BASE64Encoder();
+//String encoded2 = encoder2.encode(encrypted2);
+
+rw.setFile("encoded");
+rw.writeFile(Gadgets.asHex(encrypted));
+
+rw.setFile("encoded2");
+rw.writeFile(Gadgets.asHex(encrypted2));
+
+System.out.println("Assinatura igual a correcta? " + Arrays.equals(encrypted, encrypted2));
+
 
 //Sign sig = new Sign(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()), algorithm);
 
@@ -129,9 +149,9 @@ System.out.println(Arrays.equals(encrypted, encrypted2));
                         else
                             System.out.println("fail");
                     }
+                    else
+                        throw new Exception("Invalid Certificate");
                 }
-                else
-                    throw new Exception("Invalid Certificate");
             }
             catch (Exception ex) {
 
