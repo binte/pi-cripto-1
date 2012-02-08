@@ -1,7 +1,9 @@
 package signedData;
 
 import PKCS7.SignedData;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.Security;
 import java.security.cert.CertStore;
@@ -15,6 +17,7 @@ import java.util.logging.Logger;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.mail.smime.SMIMESigned;
@@ -26,7 +29,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, message, provider = "BC";
+        String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, provider = "BC";
         byte[] encrypted, encrypted2,  decrypted, digest;
         Cifra cipher;
         Digest dgst;
@@ -40,7 +43,8 @@ public class Main {
         CertStore certs;
         Collection c;
         Iterator it, certIt;
-
+        ByteArrayOutputStream baos;
+        ObjectOutputStream oos;
         
         // Se tiver sido passado um parâmetro ao programa
         if( args.length == 1) {
@@ -101,9 +105,6 @@ public class Main {
                         encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
 
                         
-                        /* Guardar a mensagem em claro */
-                        message = (String) signed.getContent().getContent();
-
 
 RW_File rw = new RW_File("encrypted");
 rw.writeFile(encrypted);
@@ -139,8 +140,17 @@ System.out.println("Assinatura igual a correcta? " + Arrays.equals(encrypted, en
                         // decifrar o resumo de mensagem cifrado através da chave pública lida do certificado do emissor
                         decrypted = cipher.decifrar(encrypted2, cert.getPublicKey());
 
+                        /* Ler os bytes da mensagem (texto limpo) guardada no pacote SMIME para uma OutputStream */
+                        baos = new ByteArrayOutputStream();
+                        oos = new ObjectOutputStream(baos);
+                        oos.writeObject(signed.getContent().getContent());
+                        oos.close();
+
                         /* Calcular o resumo da mensagem (texto limpo) */
-                        digest = dgst.computeMessageDigest(((String)signed.getContent().getContent()).getBytes());
+                        digest = dgst.computeMessageDigest(((String) signed.getContent().getContent()).getBytes());
+
+                        
+                        baos.close();
 
 
                         /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
