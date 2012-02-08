@@ -18,6 +18,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.pkcs.SafeBag;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.mail.smime.SMIMESigned;
@@ -105,6 +106,9 @@ public class Main {
                         encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
 
                         
+//Converter isto para um array de bytes e testar a ver se funciona
+//signed.getContentInfo().getContent();
+                        
 
 RW_File rw = new RW_File("encrypted");
 rw.writeFile(encrypted);
@@ -132,25 +136,30 @@ System.out.println("Assinatura igual a correcta? " + Arrays.equals(encrypted, en
 //System.out.println(sig.verifySign(cert.getPublicKey(), message.getBytes(), encrypted2));
 
                         /* Criar uma nova instância da classe que vai calcular o resumo da mensagem recebida em claro */
-                        dgst = new Digest(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()));
+                        dgst = new Digest(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()), provider);
 
                         /* especificar o algoritmo a ser utilizado na operação de cifragem */
-                        cipher = new Cifra(algorithm);
+                        cipher = new Cifra(algorithm, provider);
 
                         // decifrar o resumo de mensagem cifrado através da chave pública lida do certificado do emissor
                         decrypted = cipher.decifrar(encrypted2, cert.getPublicKey());
 
-                        /* Ler os bytes da mensagem (texto limpo) guardada no pacote SMIME para uma OutputStream */
-                        baos = new ByteArrayOutputStream();
-                        oos = new ObjectOutputStream(baos);
-                        oos.writeObject(signed.getContent().getContent());
-                        oos.close();
+/* Ler os bytes da mensagem (texto limpo) guardada no pacote SMIME para uma OutputStream */
+//baos = new ByteArrayOutputStream();
+//oos = new ObjectOutputStream(baos);
+//oos.writeObject(signed.getContent().getContent());
+//oos.close();
 
                         /* Calcular o resumo da mensagem (texto limpo) */
                         digest = dgst.computeMessageDigest(((String) signed.getContent().getContent()).getBytes());
 
-                        
-                        baos.close();
+//System.out.println("----------------------------------------------------");
+//System.out.println(new String(baos.toByteArray()));
+//System.out.println("----------------------------------------------------");
+//System.out.println((String) signed.getContent().getContent());
+//System.out.println("----------------------------------------------------");
+//
+//baos.close();
 
 
                         /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
