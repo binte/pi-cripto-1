@@ -21,7 +21,7 @@ public class Digest {
 
     private String algorithm;   // algoritmo de resumo de mensagem
     private int length;         // tamanho (em bits) do array associado à geração dum MessageDigest com o algoritmo dado
-    private String provider;
+    private String provider;    // nome do provider utilizado
 
 
     public Digest(String algorithm, int length, String provider){

@@ -287,6 +287,8 @@ public class Gadgets {
 
         String digestAlgorithm;
 
+//        digestAlgorithm = CMSSignedHelper.INSTANCE.getDigestAlgName(algOID);
+
         if (algOID.equals(DIGEST_SHA1))
             digestAlgorithm = "sha1";
         else if (algOID.equals(DIGEST_MD5))
