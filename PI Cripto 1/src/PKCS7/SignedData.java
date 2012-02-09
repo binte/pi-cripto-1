@@ -12,25 +12,27 @@
 package PKCS7;
 
 import java.security.cert.CRL;
+import java.util.Collection;
+import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 
 
 public class SignedData extends Content {
 
     private int version;
-    private AlgorithmIdentifier dgstAlgID;
+    private Collection<AlgorithmIdentifier> dgstAlgID;
     private ContentInfo contentInfo;
     private ExtendedCertificateOrCertificate certificate;
     private CRL crl;
-    private SignerInfo signerInfo;
+    private Collection<SignerInfo> signerInfos;
 
     
-    public SignedData(int version, AlgorithmIdentifier dgstAlgID, ContentInfo contentInfo, SignerInfo signerInfo) {
+    public SignedData(int version, ContentInfo contentInfo, Collection<SignerInfo> signerInfos) {
 
         super(version);
-        this.dgstAlgID = dgstAlgID;
+        this.dgstAlgID = null;
         this.contentInfo = contentInfo;
-        this.signerInfo = signerInfo;
+        this.signerInfos = signerInfos;
     }
 
 
