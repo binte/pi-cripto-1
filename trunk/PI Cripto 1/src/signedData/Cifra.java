@@ -23,7 +23,6 @@ public class Cifra {
      *
      * @param byte[] contendo o criptograma
      * @param PrivateKey com a chave privada
-     * @param String com o nome do Provider
      *
      * @return byte[] com a mensagem original
      */

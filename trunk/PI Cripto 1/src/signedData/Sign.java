@@ -8,14 +8,17 @@ import java.security.Signature;
 public class Sign {
 
     private String algorithm;   // algoritmo de assinatura de mensagem
+    private String provider;    // nome do provider utilizado
 
     
-    public Sign(String dgst_algorithm, String algorithm){
+    public Sign(String dgst_algorithm, String algorithm, String provider){
 
         if(dgst_algorithm != null)
             this.algorithm = Gadgets.concatDigestWithEncryptionAlgorithm(dgst_algorithm, algorithm);
         else
             this.algorithm = algorithm;
+
+        this.provider = provider;
     }
     
 
@@ -23,7 +26,7 @@ public class Sign {
 
         /* Criar uma instância da classe Signature para calcular uma assinatura da mensagem
          através do algoritmo passado à instância */
-        Signature sign = Signature.getInstance(algorithm);
+        Signature sign = Signature.getInstance(algorithm, this.provider);
 
         //Inicializar o objecto Signature com a publicKey
         sign.initSign(key);
@@ -51,7 +54,7 @@ public class Sign {
     public final boolean verifySign(PublicKey verifyKey, byte[] msg, byte[] sign) throws Exception {
 
         // Instanciar uma Signature para um dado algoritmo de assinaturas
-        Signature signature = Signature.getInstance(this.algorithm);
+        Signature signature = Signature.getInstance(this.algorithm, this.provider);
 
         // Inicializar o Objecto Signature com a chave pública da outra parte
         signature.initVerify(verifyKey);
