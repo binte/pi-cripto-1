@@ -12,11 +12,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
@@ -71,12 +73,11 @@ public class Main {
                 /* Ler os certificados do pacote SMIME */
                 certs =   (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
 
+PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
+PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContentInfo(), signed.getSignerInfos().getSigners());
+PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
 
-//PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
-//PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContent().getContentMD5(), signed.getContentInfo(), signed.getSignerInfos());
-//PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
-
-//System.out.println(contentInfo.toString());
+System.out.println(contentInfo.toString());
 
 
 
@@ -107,9 +108,6 @@ public class Main {
 
                         /* Ler os atributos não assinados, sobre os quais foi produzida a assinatura recebida */
                         attributes = s.getEncodedSignedAttributes();
-
-//Converter isto para um array de bytes e testar a ver se funciona
-//signed.getContentInfo().getContent();
                         
 
 //RW_File rw = new RW_File("encrypted");
@@ -151,7 +149,9 @@ public class Main {
                         /* Calcular o resumo da mensagem (texto limpo) */
                         digest = dgst.computeMessageDigest(attributes);
 
-DigestInfo digest_info = new DigestInfo(s.getDigestAlgorithmID(), digest);
+                        /* Criar um objecto da classe DigestInfo, que irá albergar a informação do digest
+                         que vai ser calculado para comparar com o digest lido (após decifragem) da pacote SMIME */
+                        PKCS7.DigestInfo digest_info = new PKCS7.DigestInfo(s.getDigestAlgorithmID(), digest);
 
 Gadgets.printByteArray(digest_info.getEncoded());
 Gadgets.printByteArray(decrypted);
@@ -164,17 +164,10 @@ Gadgets.printByteArray(decrypted);
 //
 //baos.close();
 
-
-if( MessageDigest.isEqual(decrypted, digest_info.getEncoded()) )
-    System.out.println("check");
-else
-    System.out.println("fail");
-
-                        /* Comparar o resumo da mensagem com o resumo de mensagem desencriptado em cima */
-//                        if( MessageDigest.isEqual(decrypted, digest) )
-//                            System.out.println("check");
-//                        else
-//                            System.out.println("fail");
+                        if( MessageDigest.isEqual(decrypted, digest_info.getEncoded()) )
+                            System.out.println("check");
+                        else
+                            System.out.println("fail");
                     }
                     else
                         throw new Exception("Invalid Certificate");

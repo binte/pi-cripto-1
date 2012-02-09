@@ -1,5 +1,6 @@
 package signedData;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
@@ -7,6 +8,7 @@ import java.io.IOError;
 import java.io.IOException;
 import java.security.KeyPair;
 
+import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
@@ -338,5 +340,21 @@ public class Gadgets {
         sb.append(dgst_algorithm + "With" + algorithm);
 
         return sb.toString();
+    }
+
+    /***
+     * Codificar em bytes um dado Object
+     *
+     * @param Object
+     *
+     * @return byte[] com a sequência de bytes relativa ao objecto
+     */
+    public static byte[] getEncoded(Object obj) throws IOException
+    {
+        ByteArrayOutputStream   bOut = new ByteArrayOutputStream();
+        ASN1OutputStream        aOut = new ASN1OutputStream(bOut);
+        aOut.writeObject(obj);
+
+        return bOut.toByteArray();
     }
 }

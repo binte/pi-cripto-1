@@ -2,7 +2,7 @@
  * * Contem a informação do conteúdo cifrado
  * 
  *              EncryptedData ::= SEQUENCE { version Version,
- *                                            encryptedContentInfo EncryptedContentInfo }
+ *                                           encryptedContentInfo EncryptedContentInfo }
  *
  */
 package PKCS7;
@@ -30,6 +30,7 @@ public class EncryptedData extends Content{
      * @param eci 
      */
     public EncryptedData(int version,EncryptedContentInfo eci){
+        
         super(version);
         encryptedContentInfo = eci;
     }
@@ -41,12 +42,14 @@ public class EncryptedData extends Content{
      * @param eci 
      */
     public EncryptedData(int version,String attrs,EncryptedContentInfo eci){
+
         super(version);
         unprotectredAttrs = attrs;
         encryptedContentInfo = eci;
     }
     
     public String toString(){
+        
         StringBuilder st = new StringBuilder("EncryptedData ::= SEQUENCE { version");
         st.append(version+",\n");
         st.append(encryptedContentInfo.toString());
