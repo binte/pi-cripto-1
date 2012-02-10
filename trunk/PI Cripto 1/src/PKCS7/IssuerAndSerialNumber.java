@@ -7,14 +7,18 @@
 
 package PKCS7;
 
+import javax.security.auth.x500.X500Principal;
+import org.bouncycastle.asn1.x500.X500Name;
+import sun.security.x509.CertificateSerialNumber;
+
 
 public class IssuerAndSerialNumber {
 
-    private String issuer;
-    private String serialNumber;
+    private X500Principal issuer;
+    private CertificateSerialNumber serialNumber;
 
 
-    public IssuerAndSerialNumber(String issuer, String serialNumber) {
+    public IssuerAndSerialNumber(X500Principal issuer, CertificateSerialNumber serialNumber) {
 
         this.issuer = issuer;
         this.serialNumber = serialNumber;
@@ -26,8 +30,8 @@ public class IssuerAndSerialNumber {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("IssuerAndSerialNumber ::= SEQUENCE { Issuer " + this.issuer + ",\n");
-        sb.append("SerialNumber " + this.serialNumber + " }\n");
+        sb.append("IssuerAndSerialNumber ::= SEQUENCE { Issuer " + this.issuer.toString() + ", ");
+        sb.append("SerialNumber " + this.serialNumber.toString() + " }");
 
         return sb.toString();
     }

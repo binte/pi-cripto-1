@@ -14,12 +14,13 @@ package PKCS7;
 
 import org.bouncycastle.asn1.cms.Attributes;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import signedData.Gadgets;
 
 
 public class SignerInfo {
 
     private int version;
-    private IssuerAndSerialNumber isn;
+    private PKCS7.IssuerAndSerialNumber isn;
     private AlgorithmIdentifier dgstAlgID;
     private Attributes authenticatedAttributes;
     private AlgorithmIdentifier dgstEncryptionAlgorithm;
@@ -27,7 +28,7 @@ public class SignerInfo {
     private Attributes unauthenticatedAttributes;
 
 
-    public SignerInfo(int version, IssuerAndSerialNumber isn, AlgorithmIdentifier dgstAlgID,
+    public SignerInfo(int version, PKCS7.IssuerAndSerialNumber isn, AlgorithmIdentifier dgstAlgID,
             Attributes authenticatedAttributes, AlgorithmIdentifier dgstEncryptionAlgorithm,
             byte[] encryptedDigest, Attributes unauthenticatedAttributes) {
 
@@ -46,18 +47,22 @@ public class SignerInfo {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("SignerInfo ::= SEQUENCE { Version " + this.version + ",\n");
-        sb.append("                          issuerAndSerialNumber " + this.isn.toString() + ",\n");
-        sb.append("digestAlgorithm " + this.dgstAlgID.toString() + ",\n");
+        sb.append(" SignerInfo ::= SEQUENCE { Version " + this.version + ",\n");
+        sb.append("                           issuerAndSerialNumber " + this.isn.toString() + ",\n");
+        sb.append("                           digestAlgorithm " + Gadgets.getBC_DigestAlgorithm(this.dgstAlgID.getAlgorithm().getId()) + ",\n");
 
         if(this.authenticatedAttributes != null)
-            sb.append("authenticatedAttributes " + this.authenticatedAttributes.toString() + ",\n");
+            sb.append("                           authenticatedAttributes " + this.authenticatedAttributes.toString() + ",\n");
+        else
+            sb.append("                           authenticatedAttributes: " + this.authenticatedAttributes);
 
-        sb.append("digestEncryptionAlgorithm " + this.dgstEncryptionAlgorithm.toString() + ",\n");
-        sb.append("encryptedDigest: *********************,\n");
+        sb.append("                           digestEncryptionAlgorithm " + Gadgets.getBC_Algorithm(this.dgstEncryptionAlgorithm.getAlgorithm().getId()) + ",\n");
+        sb.append("                           encryptedDigest: ******,\n");
 
         if(this.unauthenticatedAttributes != null)
-            sb.append("unauthenticatedAttributes: " + this.unauthenticatedAttributes.toString());
+            sb.append("                           unauthenticatedAttributes: " + this.unauthenticatedAttributes.toString());
+        else
+            sb.append("                           unauthenticatedAttributes: " + this.unauthenticatedAttributes);
 
         sb.append(" }\n");
 
