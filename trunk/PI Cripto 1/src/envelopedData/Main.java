@@ -28,14 +28,18 @@ public class Main {
         String provider = "BC";
         String algorithm = "RSA";
         PrivateKey prvtkey;
+        File file;
         
         //Leitura do criptograma
         rw= new RW_File(args[0]);
         criptograma = rw.readByteFile();
         
         //Leitura da private Key
-        
-         prvtkey = Gadgets.readKeyPair(new File(args[1])).getPrivate();
+         System.out.println(args[0]);
+         System.out.println(args[1]);
+         file = new File(args[1]);
+         if(file.canRead()) System.out.println("Ok!");
+         prvtkey = Gadgets.readKeyPair(file).getPrivate();
          
          cifra = new Cifra(algorithm,provider);
          textolimpo = cifra.decifrar(criptograma, prvtkey);
