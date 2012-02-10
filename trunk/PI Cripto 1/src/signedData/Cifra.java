@@ -73,4 +73,24 @@ public class Cifra {
 
         return secret_text;
     }
+    
+    public byte[] decifrar(byte[] encrypted, SecretKey sKey) throws Exception{
+
+        byte[] secret_text = null;
+
+        /* Criar um objecto Cipher, que implemente uma dada transformação. A tranformação é uma string na forma:
+
+            "algoritmo/modo/padding" ou
+            "algoritmo"
+         */
+        Cipher cipher = Cipher.getInstance(this.algorithm);
+
+        // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
+        cipher.init(Cipher.DECRYPT_MODE, sKey);
+
+        // Desencriptar o array de bytes encriptado recebido pela função num único passo
+        secret_text = cipher.doFinal(encrypted);
+
+        return secret_text;
+    }
 }
