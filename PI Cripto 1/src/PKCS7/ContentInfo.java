@@ -24,7 +24,7 @@ public class ContentInfo {
      *
      * @return ContentType
      */
-    public ContentType getContentType() {
+    public PKCS7.ContentType getContentType() {
 
         return this.contentType;
     }
@@ -45,7 +45,7 @@ public class ContentInfo {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.contentType.toString()); 
+        sb.append(this.contentType.toString() + "\n");
 
         sb.append(this.content.toString());
 

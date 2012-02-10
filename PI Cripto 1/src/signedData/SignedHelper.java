@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package envelopedData;
+package signedData;
 
-/**
- *
- * @author joao
- */
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -49,9 +41,9 @@ import org.bouncycastle.x509.X509CollectionStoreParameters;
 import org.bouncycastle.x509.X509Store;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 
-class CMSSignedHelper
+class SignedHelper
 {
-    static final CMSSignedHelper INSTANCE = new CMSSignedHelper();
+    static final SignedHelper INSTANCE = new SignedHelper();
 
     private static final Map     encryptionAlgs = new HashMap();
     private static final Map     digestAlgs = new HashMap();
