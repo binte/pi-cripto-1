@@ -126,7 +126,7 @@ signerInfos.add(signerInfo);
                                                              cert, Security.getProvider(provider))) {
 
                         /* Ler o identificador do algoritmo utilizado para cifrar o resumo de mensagem */
-                        algorithm = Gadgets.getBC_Algorithm(s.getEncryptionAlgOID());
+                        algorithm = SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID());
 
                         /* Ler os bytes da assinatura (resumo de mensagem) cifrado */
                         encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
@@ -157,7 +157,7 @@ signerInfos.add(signerInfo);
 
 
                         /* Criar uma nova instância da classe que vai calcular o resumo da mensagem recebida em claro */
-                        dgst = new Digest(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()), provider);
+                        dgst = new Digest(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), provider);
 
                         /* especificar o algoritmo a ser utilizado na operação de decifragem */
                         cipher = new Cifra(algorithm, provider);
