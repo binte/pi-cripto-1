@@ -41,7 +41,7 @@ import org.bouncycastle.x509.X509CollectionStoreParameters;
 import org.bouncycastle.x509.X509Store;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 
-class SignedHelper
+public class SignedHelper
 {
     static final SignedHelper INSTANCE = new SignedHelper();
 
@@ -127,7 +127,7 @@ class SignedHelper
      * Return the digest algorithm using one of the standard JCA string
      * representations rather than the algorithm identifier (if possible).
      */
-    String getDigestAlgName(
+    public static String getDigestAlgName(
         String digestAlgOID)
     {
         String algName = (String)digestAlgs.get(digestAlgOID);
@@ -158,7 +158,7 @@ class SignedHelper
      * JCA string representations rather the the algorithm identifier (if
      * possible).
      */
-    String getEncryptionAlgName(
+    public static String getEncryptionAlgName(
         String encryptionAlgOID)
     {
         String algName = (String)encryptionAlgs.get(encryptionAlgOID);

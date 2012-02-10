@@ -49,14 +49,14 @@ public class SignerInfo {
 
         sb.append(" SignerInfo ::= SEQUENCE { Version " + this.version + ",\n");
         sb.append("                           issuerAndSerialNumber " + this.isn.toString() + ",\n");
-        sb.append("                           digestAlgorithm " + Gadgets.getBC_DigestAlgorithm(this.dgstAlgID.getAlgorithm().getId()) + ",\n");
+        sb.append("                           digestAlgorithm " + signedData.SignedHelper.getDigestAlgName(this.dgstAlgID.getAlgorithm().getId()) + ",\n");
 
         if(this.authenticatedAttributes != null)
             sb.append("                           authenticatedAttributes " + this.authenticatedAttributes.toString() + ",\n");
         else
             sb.append("                           authenticatedAttributes: " + this.authenticatedAttributes);
 
-        sb.append("                           digestEncryptionAlgorithm " + Gadgets.getBC_Algorithm(this.dgstEncryptionAlgorithm.getAlgorithm().getId()) + ",\n");
+        sb.append("                           digestEncryptionAlgorithm " + signedData.SignedHelper.getEncryptionAlgName(this.dgstEncryptionAlgorithm.getAlgorithm().getId()) + ",\n");
         sb.append("                           encryptedDigest: ******,\n");
 
         if(this.unauthenticatedAttributes != null)

@@ -57,7 +57,7 @@ public class Main {
                 s = (SignerInformation) it.next();
 
                 
-                sig = new Sign(Gadgets.getBC_DigestAlgorithm(s.getDigestAlgOID()), Gadgets.getBC_Algorithm(s.getEncryptionAlgOID()), "BC");
+                sig = new Sign(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), signedData.SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID()), "BC");
 
 RW_File rw = new RW_File("Signer/message.txt");
 KeyPair kp = Gadgets.readKeyPair(new File("Signer/signer_key.pem"));
