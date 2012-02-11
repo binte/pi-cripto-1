@@ -26,12 +26,12 @@ public class Cifra {
     }
     
 
-    void setAlgorithm(String algorithm) {
+    public void setAlgorithm(String algorithm) {
 
         this.algorithm = algorithm;
     }
 
-    void setFile(String keyFile) {
+    public void setFile(String keyFile) {
 
         this.keyFile = keyFile;
     }
