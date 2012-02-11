@@ -25,8 +25,7 @@ public class Main {
      * arg 0 - path do chave secreta encriptada
      * arg 1 - path da privateKey do receptor
      * arg 2 - path do iv
-     * arg 3 - path do salt
-     * arg 4 - path do criptograma
+     * arg 3 - path do criptograma
      * @param args 
      */
     public static void main(String []args) throws IOException, Exception{
@@ -43,35 +42,24 @@ public class Main {
         //Leitura do array da secretKey
         rw= new RW_File(args[0]);
         encrypted = rw.readByteFile();
-        System.out.println("Encrypted:"+encrypted.length);
         
         //Decifragem do array de bytes secretkey
         cipher = new Cifra(asym_algorithm,provider);
         cipher.setFile(args[1]);
         aux = cipher.decifrar(encrypted);
-        System.out.println("Decrypted:"+aux.length);
-        System.out.println(new String(aux));
                 
         //decrypted = new byte[32];
         decrypted = Arrays.copyOfRange(aux, aux.length-32, aux.length);
         
-        System.out.println(decrypted);
         //Obter finalmente a secretkey, depois de mudado para algoritmo simétrico
         cipher.setAlgorithm(sym_algorithm);
         String s = new String(decrypted);
-        System.out.println("Length"+s.length());
         skey = cipher.build_key(Gadgets.hexStringToByteArray(s));
-        
-        System.out.println("Key Length:"+skey.getEncoded().length);
         
         //leitura do iv
         rw.setFile(args[2]);
         iv = rw.readByteFile();
         
-        //leitura do salt
-        
-        rw.setFile(args[3]);
-        salt = rw.readByteFile();
         
         //leitura do criptograma
         rw.setFile(args[4]);
