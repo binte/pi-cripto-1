@@ -1,8 +1,5 @@
 package signedData;
 
-import PKCS7.ContentInfo;
-import PKCS7.SignedData;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
@@ -11,13 +8,9 @@ import java.security.Security;
 import java.security.cert.CertStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Session;
@@ -80,7 +73,7 @@ public class Main {
                 c = signers.getSigners();
 
                 /* Ler os certificados do pacote SMIME */
-                certs =   (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
+                    certs = (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
 
 
 PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
@@ -178,8 +171,8 @@ signerInfos.add(signerInfo);
                          que vai ser calculado para comparar com o digest lido (após decifragem) da pacote SMIME */
                         PKCS7.DigestInfo digest_info = new PKCS7.DigestInfo(s.getDigestAlgorithmID(), digest);
 
-Gadgets.printByteArray(digest_info.getEncoded());
-Gadgets.printByteArray(decrypted);
+//Gadgets.printByteArray(digest_info.getEncoded());
+//Gadgets.printByteArray(decrypted);
 
 //System.out.println("----------------------------------------------------");
 //System.out.println(new String(baos.toByteArray()));

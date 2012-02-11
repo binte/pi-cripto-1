@@ -3,6 +3,7 @@ package signedAndEnvelopedData;
 import java.io.File;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.Security;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -56,12 +57,12 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm);
+        Cipher cipher = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 
-        // Desencriptar o array de bytes encriptado recebido pela função num único passo
+        // Decifrar o array de bytes cifrado, que recebido pela função, num único passo
         secret_text = cipher.doFinal(encrypted);
 
         return secret_text;
@@ -85,7 +86,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cp = Cipher.getInstance(this.algorithm);
+        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key);
@@ -116,7 +117,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cp = Cipher.getInstance(this.algorithm);
+        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
@@ -146,7 +147,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */ 
-        Cipher cp = Cipher.getInstance(algorithm);
+        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
         
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key);
