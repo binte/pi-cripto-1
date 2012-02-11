@@ -6,13 +6,14 @@ package envelopedData;
 import java.io.File;
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
-import signedData.Cifra;
-import signedData.RW_File;
-import signedData.Gadgets;
-import signedData.RW_KeyStore;
+import signedAndEnvelopedData.Cifra;
+import signedAndEnvelopedData.RW_File;
+import signedAndEnvelopedData.Gadgets;
+//import signedAndEnvelopedData.RW_KeyStore;
 
 /**
  *
@@ -21,31 +22,47 @@ import signedData.RW_KeyStore;
 public class Main {
 
     /**
-     * arg 1 - path do chave secreta encriptada
-     * arg 2 - path da privateKey do receptor
-     * arg 3 - path do iv
-     * arg 4 - path do salt
-     * arg 5 - path do criptograma
+     * arg 0 - path do chave secreta encriptada
+     * arg 1 - path da privateKey do receptor
+     * arg 2 - path do iv
+     * arg 3 - path do salt
+     * arg 4 - path do criptograma
      * @param args 
      */
     public static void main(String []args) throws IOException, Exception{
-        
+        String sym_algorithm = "AES/CBC/PKCS7Padding", asym_algorithm = "RSA", provider = "BC",
+                digest_algorithm = "SHA-256";
         String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS",
-                key_alias = "recipient_pkcs12", cert_alias = "cacert", algorithm, provider = "BC";
+                key_alias = "recipient_pkcs12", cert_alias = "cacert";
         char[] passphrase = {'1','2','3','4','5','6'};
-        byte[] criptograma,textolimpo,iv,salt,keydata;
+        byte[] encrypted,decrypted,iv,salt,keydata,aux;
         RW_File rw;
-        Cifra cifra;
-        algorithm = "AES/CBC";
-        
-        PrivateKey prvtkey;
-        File file;
+        Cifra cipher;
+        SecretKeySpec skey;
         
         //Leitura do array da secretKey
         rw= new RW_File(args[0]);
-        keydata = rw.readByteFile();
-        SecretKeySpec sks = new SecretKeySpec (keydata,algorithm);
+        encrypted = rw.readByteFile();
+        System.out.println("Encrypted:"+encrypted.length);
         
+        //Decifragem do array de bytes secretkey
+        cipher = new Cifra(asym_algorithm,provider);
+        cipher.setFile(args[1]);
+        aux = cipher.decifrar(encrypted);
+        System.out.println("Decrypted:"+aux.length);
+        System.out.println(new String(aux));
+                
+        //decrypted = new byte[32];
+        decrypted = Arrays.copyOfRange(aux, aux.length-32, aux.length);
+        
+        System.out.println(decrypted);
+        //Obter finalmente a secretkey, depois de mudado para algoritmo simétrico
+        cipher.setAlgorithm(sym_algorithm);
+        String s = new String(decrypted);
+        System.out.println("Length"+s.length());
+        skey = cipher.build_key(Gadgets.hexStringToByteArray(s));
+        
+        System.out.println("Key Length:"+skey.getEncoded().length);
         
         //leitura do iv
         rw.setFile(args[2]);
@@ -56,14 +73,17 @@ public class Main {
         rw.setFile(args[3]);
         salt = rw.readByteFile();
         
-        //Leitura do criptograma
-        
+        //leitura do criptograma
         rw.setFile(args[4]);
-        criptograma = rw.readByteFile();
+        encrypted = rw.readByteFile();
         
-        //Leitura da private Key
-        cifra  = new Cifra(algorithm,provider);
-        textolimpo = cifra.decifrar(keydata, sks);
-        System.out.println(new String(textolimpo));
+        //Decifrar o criptograma
+        
+        decrypted = cipher.decifrar(skey, encrypted, Gadgets.hexStringToByteArray(new String(iv)));
+        
+        System.out.println(new String(decrypted));
+        
+        
+        
         }
 }
