@@ -63,7 +63,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm);
+        Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
         cipher.init(Cipher.DECRYPT_MODE, pubKey);
@@ -83,7 +83,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm);
+        Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
         cipher.init(Cipher.DECRYPT_MODE, sKey);

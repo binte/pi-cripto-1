@@ -57,7 +57,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
+        Cipher cipher = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
@@ -86,7 +86,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
+        Cipher cp = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key);
@@ -117,7 +117,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
+        Cipher cp = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
@@ -147,7 +147,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */ 
-        Cipher cp = Cipher.getInstance(this.algorithm, Security.getProvider(this.provider));
+        Cipher cp = Cipher.getInstance(this.algorithm);
         
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
         cp.init(Cipher.DECRYPT_MODE, key);
