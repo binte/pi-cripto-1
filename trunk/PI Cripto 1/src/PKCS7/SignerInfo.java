@@ -14,7 +14,6 @@ package PKCS7;
 
 import org.bouncycastle.asn1.cms.Attributes;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import signedData.Gadgets;
 
 
 public class SignerInfo {
@@ -57,7 +56,7 @@ public class SignerInfo {
             sb.append("                           authenticatedAttributes: " + this.authenticatedAttributes);
 
         sb.append("                           digestEncryptionAlgorithm " + signedData.SignedHelper.getEncryptionAlgName(this.dgstEncryptionAlgorithm.getAlgorithm().getId()) + ",\n");
-        sb.append("                           encryptedDigest: ******,\n");
+        sb.append("                           encryptedDigest: " + this.encryptedDigest.length + " bytes,\n");
 
         if(this.unauthenticatedAttributes != null)
             sb.append("                           unauthenticatedAttributes: " + this.unauthenticatedAttributes.toString());
@@ -69,3 +68,4 @@ public class SignerInfo {
         return sb.toString();
     }
 }
+
