@@ -28,8 +28,8 @@ public class Main {
             /**
              * 0 - Path do ficheiro que contém o certificado da CA (formato DER)
              * 1 - Path do ficheiro que contém o certificado do emissor (formato DER)
-             * 2 - Path do ficheiro que contém a assinatura (duplamente) encriptada
-             * 3 - Path do ficheiro no qual está contida a chave secreta encriptada
+             * 2 - Path do ficheiro que contém a assinatura (duplamente) cifrada
+             * 3 - Path do ficheiro no qual está contida a chave secreta cifrada
              * 4 - Path do ficheiro que contém o par de chaves do receptor em formato PEM
              * 5 - Path do ficheiro que contém o criptograma
              * 6 - Path do ficheiro que contém o par de chaves do emissor em formato PEM
@@ -61,17 +61,17 @@ public class Main {
 //PASSO 13
                     rw = new RW_File(args[3]);
 
-                    // ler os bytes do ficheiro que contém a chave secreta encriptada
+                    // ler os bytes do ficheiro que contém a chave secreta cifrada
                     encrypted = rw.readByteFile();
-
+System.out.println(encrypted.length);
                     // especificar o ficheiro no qual está contida a chave privada que irá ser utilizada para decifrar
                     cipher.setFile(args[4]);  // a chave secreta
 
-                    // desencriptar a chave secreta
+                    // decifrar a chave secreta
                     decrypted = cipher.decifrar(encrypted);
-
-                    /* obter a SecretKey através do criptograma desencriptado (antes é necessário mudar o algoritmo
-                    da cifra para o algoritmo simétrico correspondente à chave desencriptada) */
+System.out.println(decrypted.length);
+                    /* obter a SecretKey através do criptograma decifrado (antes é necessário mudar o algoritmo
+                    da cifra para o algoritmo simétrico correspondente à chave decifrada) */
                     cipher.setAlgorithm(sym_algorithm);
                     skey = cipher.build_key(Gadgets.hexStringToByteArray(new String(decrypted)));
                     
@@ -88,7 +88,7 @@ public class Main {
                     // ler os bytes do ficheiro que contém o IV
                     iv = rw.readByteFile();
 
-                    // desencriptar o criptograma
+                    // decifrar o criptograma
                     decrypted = cipher.decifrar(skey, encrypted, Gadgets.hexStringToByteArray(new String(iv)));
 
 
