@@ -42,6 +42,13 @@ public class EncryptedContentInfo {
         contentEncryptionAlgorithm = ai;
         encryptedContent = ec;
     }
+    /**
+     * Gets 
+     */
+    public Content getContent(){return content;}
+    public AlgorithmIdentifier get(){ return contentEncryptionAlgorithm;}
+    public byte[] getEncryptedContent(){return encryptedContent;}
+    
     
     public String toString(){
         StringBuilder sb = new StringBuilder("EncryptedContentInfo ::= SEQUENCE {contentType ");

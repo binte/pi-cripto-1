@@ -37,6 +37,11 @@ public class RecipientInfo {
 
  */
     
+    public int getVersion(){return version;}
+    public IssuerAndSerialNumber getIssuerAndSerialNumber(){return issuerAndSerialNumber;}
+    public AlgorithmIdentifier getAlgorithmIdentifier(){return keyAlgorithmIdentifier;}
+    public byte[] getEncryptedKey(){return encryptedKey;}
+    
     public String toString(){
         StringBuilder st = new StringBuilder("RecipientInfo ::= SEQUENCE { version");
         st.append(version+",\n");

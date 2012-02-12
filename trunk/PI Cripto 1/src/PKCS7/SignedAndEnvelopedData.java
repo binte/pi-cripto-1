@@ -10,6 +10,7 @@
  */
 package PKCS7;
 
+import java.security.Certificate;
 import java.security.cert.CRL;
 import java.util.Set;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -64,6 +65,13 @@ public class SignedAndEnvelopedData {
         this.crls = crls;
         signerInfos = si;
     }
+    
+    public int getVersion(){return version;}
+    public Set<RecipientInfo> getRecipientInfos(){return recipientInfos;}
+    public EncryptedContentInfo getEncryptedContentInfo(){return encryptedContentInfo;}
+    public CRL getCertificates(){return certificates;}
+    public ExtendedCertificateOrCertificate getCRL(){return crls;}
+    public Set<SignerInfo> getSignerInfos(){return signerInfos;}
     
     public String toString(){
         StringBuilder st = new StringBuilder("SignedAndEnvelopedData ::= SEQUENCE { version ");

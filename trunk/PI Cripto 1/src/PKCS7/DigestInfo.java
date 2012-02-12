@@ -27,6 +27,15 @@ public class DigestInfo extends ASN1Encodable {
         this.dgstAlgID = dgstAlgID;
         this.digest = digest;
     }
+    
+    /**
+     * Gets
+     * @return 
+     */    
+    public AlgorithmIdentifier getAlgorithmIdentifier(){return dgstAlgID;}
+    public byte[] getDigest(){return digest;}
+    
+    
 
     /***
      * Método auxiliar necessário para invocar o getEncoded(), que é extendido pela classe ASN1Encodable
@@ -42,5 +51,16 @@ public class DigestInfo extends ASN1Encodable {
         v.add(new DEROctetString(this.digest));
 
         return new DERSequence(v);
+    }
+    
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.dgstAlgID.toString() + "\n");
+
+        sb.append(this.digest.toString());
+
+        return sb.toString();
     }
 }

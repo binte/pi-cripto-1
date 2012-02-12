@@ -19,4 +19,6 @@ public class ExtendedCertificateOrCertificate {
 
         this.certificate = certificate;
     }
+    
+    public X509Certificate getExtendedCertificate(){return certificate;}
 }
