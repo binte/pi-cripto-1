@@ -48,9 +48,9 @@ import org.bouncycastle.cms.*;
 import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.util.io.TeeInputStream;
 
-class CMSEnvelopedHelper
+public class EnvelopedHelper
 {
-    static final CMSEnvelopedHelper INSTANCE = new CMSEnvelopedHelper();
+    static final EnvelopedHelper INSTANCE = new EnvelopedHelper();
 
     private static final Map KEYSIZES = new HashMap();
     private static final Map BASE_CIPHER_NAMES = new HashMap();
@@ -404,7 +404,7 @@ class CMSEnvelopedHelper
         }
     }
 
-    String getSymmetricCipherName(String oid)
+    public static String getSymmetricCipherName(String oid)
     {
         String algName = (String)BASE_CIPHER_NAMES.get(oid);
         if (algName != null)
@@ -412,10 +412,5 @@ class CMSEnvelopedHelper
             return algName;
         }
         return oid;
-    }
-
-   
-    
-
-    
+    } 
 }

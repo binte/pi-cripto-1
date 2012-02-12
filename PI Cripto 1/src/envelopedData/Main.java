@@ -30,15 +30,19 @@ import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.RecipientInfo;
 import org.bouncycastle.cms.KEKRecipientInformation;
 import org.bouncycastle.cms.KeyTransRecipientInformation;
+import org.bouncycastle.cms.Recipient;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.RecipientInformationStore;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMEUtil;
-import signedAndEnvelopedData.Cifra;
-import signedAndEnvelopedData.RW_File;
+import signedData.Cifra;
+import signedData.RW_File;
 import signedAndEnvelopedData.Gadgets;
+import signedData.EnvelopedHelper;
+import signedData.SignedHelper;
 import sun.security.x509.CertificateSerialNumber;
+
 //import signedAndEnvelopedData.RW_KeyStore;
 
 /**
@@ -55,7 +59,7 @@ public class Main {
      * @param args 
      */
     public static void main(String []args) throws IOException, Exception{
-        String sym_algorithm = "AES/CBC/PKCS7Padding", asym_algorithm = "RSA", provider = "BC",
+        String sym_algorithm = "AES/CBC/PKCS7Padding", asym_algorithm, provider = "BC",
                 digest_algorithm = "SHA-256";
         String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS",
                 key_alias = "recipient_pkcs12", cert_alias = "cacert";
@@ -89,14 +93,29 @@ public class Main {
         //ASN1Sequence asn1seq = ASN1Sequence.getInstance(file);
         
         enveloped = new SMIMEEnveloped(msg);
-        System.out.println("EC CT"+enveloped.getEncryptedContent().getContentType());
-        ContentInfo contentInfo = enveloped.getContentInfo();
-        System.out.println(contentInfo.getContentType().toString());
-        System.out.println("ContentID:"+enveloped.getEncryptedContent().getContentID());
+
+//System.out.println("SIM? " + enveloped.getContentInfo().getContentType().equals(ContentInfo.envelopedData));
+
+System.out.println("enc algorithm " + EnvelopedHelper.getSymmetricCipherName(enveloped.getEncryptionAlgOID()));
+System.out.println("content type " + enveloped.getContentInfo().getContentType());
+
+System.out.println("EC CT: " + enveloped.getEncryptedContent().getContentType());
+
+ContentInfo contentInfo = enveloped.getContentInfo();
+System.out.println(contentInfo.getContentType().toString());
+
+System.out.println("ContentID: " + enveloped.getEncryptedContent().getContentID());
         
-        System.out.println("Content info ContentType:"+contentInfo.getContentType());
-        
-        
+
+BASE64DecoderStream b64 = ((BASE64DecoderStream)enveloped.getEncryptedContent().getContent());
+
+byte[] teste = new byte[b64.available()], teste2;
+
+b64.read(teste, 0, b64.available());
+
+System.out.println("LENGTH: " + teste.length);
+//System.out.println(new String(teste));
+
         //enveloped = new SMIMEEnveloped((MimeBodyPart)msg.getContent());
         /*
         MimePart encryptedContent = enveloped.getEncryptedContent();
@@ -131,20 +150,25 @@ public class Main {
         
         while(it.hasNext()){
             
-            ri = (RecipientInformation)it.next();
-            System.out.println("Recipient");
-            System.out.println(ri.toString());
-            
-            RecipientInformation nri = recipientInfos.get(ri.getRID());
-            
-            MimeBodyPart        res = SMIMEUtil.toMimeBodyPart(ri.getContent(
-                new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider)));
-                byte[] content = ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider));
-            rw.setFile("encryptedkey_java");
-            if(ri.getKeyEncryptionAlgorithmParameters(provider)==null) System.out.println("NULL");
-            System.out.println(ri.getKeyEncryptionAlgorithmParameters(provider).getAlgorithm());
-            
-            System.out.println("Message:");
+            ri = (RecipientInformation) it.next();
+
+            asym_algorithm = SignedHelper.getEncryptionAlgName(ri.getKeyEncryptionAlgOID());
+System.out.println(ri.getKeyEncryptionAlgParams().length);
+ri.getKeyEncryptionAlgorithmParameters(provider);
+
+            MimeBodyPart        res = SMIMEUtil.toMimeBodyPart(ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider)));
+
+System.out.println(ri.getRID().getSubjectPublicKeyAlgID());
+
+
+teste2 = ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider));
+System.out.println(teste2.length);
+//Cifra cifra = new Cifra(asym_algorithm);
+//cifra.decifrar(teste, pkey);
+//res = SMIMEUtil.toMimeBodyPart(teste);
+
+
+            System.out.println("\n\n\nMessage:");
             System.out.println(res.getContent());
             /*       
             byte[] keyEncryptionAlgParams = nri.getKeyEncryptionAlgParams();

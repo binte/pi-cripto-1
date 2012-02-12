@@ -8,13 +8,11 @@ import javax.crypto.*;
 public class Cifra {
 
     private String algorithm;   // algoritmo utilizado para cifrar/decifrar
-    private String provider;    // nome do provider utilizado
 
 
-    public Cifra(String algorithm, String provider) {
+    public Cifra(String algorithm) {
 
         this.algorithm = algorithm;
-        this.provider = provider;
     }
     
 
@@ -35,7 +33,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+        Cipher cipher = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -63,7 +61,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+        Cipher cipher = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
         cipher.init(Cipher.DECRYPT_MODE, pubKey);
@@ -83,7 +81,7 @@ public class Cifra {
             "algoritmo/modo/padding" ou
             "algoritmo"
          */
-        Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+        Cipher cipher = Cipher.getInstance(this.algorithm);
 
         // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar
         cipher.init(Cipher.DECRYPT_MODE, sKey);

@@ -73,7 +73,7 @@ public class Main {
                 c = signers.getSigners();
 
                 /* Ler os certificados do pacote SMIME */
-                    certs = (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
+                certs = (CertStore) signed.getCertificatesAndCRLs("Collection", provider);
 
 
 PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().getContentType());
@@ -153,7 +153,7 @@ signerInfos.add(signerInfo);
                         dgst = new Digest(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), provider);
 
                         /* especificar o algoritmo a ser utilizado na operação de decifragem */
-                        cipher = new Cifra(algorithm, provider);
+                        cipher = new Cifra(algorithm);
 
                         // decifrar o resumo de mensagem cifrado através da chave pública lida do certificado do emissor
                         decrypted = cipher.decifrar(encrypted, cert.getPublicKey());
