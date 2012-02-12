@@ -24,8 +24,6 @@ public class Gadgets {
 
     private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
-
-
     public static final String pkcs_1 = "1.2.840.113549.1.1";
     public static final String pkcs_7 = "1.2.840.113549.1.7";
 

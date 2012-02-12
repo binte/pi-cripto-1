@@ -4,16 +4,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
+import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.CertStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Session;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
@@ -23,6 +24,11 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.asn1.pkcs.SignerInfo;
+import org.bouncycastle.cms.RecipientInformation;
+import org.bouncycastle.cms.RecipientInformationStore;
+import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
+import org.bouncycastle.mail.smime.SMIMEEnveloped;
+import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 import sun.misc.BASE64Encoder;
 import sun.security.x509.CertificateSerialNumber;
@@ -33,22 +39,24 @@ public class Main {
     public static void main(String[] args) {
 
         String ksFile = "Recipient/ks_recipient", ks_type = "JCEKS", key_alias = "recipient_pkcs12",
-                cert_alias = "cacert", algorithm, provider = "BC";
+                cert_alias = "cacert", asym_algorithm, provider = "BC";
         byte[] encrypted, decrypted, digest, attributes;
         Cifra cipher;
         Digest dgst;
         X509Certificate cert;
-        Properties props;
         Session session;
         MimeMessage msg;
         SMIMESigned signed;
+        SMIMEEnveloped enveloped;
         SignerInformationStore signers;
         SignerInformation s;
         CertStore certs;
         Collection c;
-        Iterator it, certIt;
+        Iterator sig_it, env_it, certIt;
+        RecipientInformation ri;
         ByteArrayOutputStream baos;
         ObjectOutputStream oos;
+
 
         
         // Se tiver sido passado um parâmetro ao programa
@@ -60,11 +68,14 @@ public class Main {
 
 
             try {
-
-                props = System.getProperties();
-                session = Session.getDefaultInstance(props);
+                
+                session = Session.getDefaultInstance(System.getProperties());
 
                 msg = new MimeMessage(session, new FileInputStream(args[0]));
+
+
+if(msg.getDataHandler().getContentType().startsWith("multipart/signed")) {
+
                 signed = new SMIMESigned((MimeMultipart) msg.getContent());
 
                 /* Colocar a informação dos vários signatários (contida no pacote SMIME) numa Collection,
@@ -80,12 +91,12 @@ PKCS7.ContentType contentType = new PKCS7.ContentType(signed.getContentInfo().ge
 ArrayList<PKCS7.SignerInfo> signerInfos = new ArrayList<PKCS7.SignerInfo>();
 
                 /* Iterar os signatários */
-                it = c.iterator();
+                sig_it = c.iterator();
 
-                while(it.hasNext()) {
+                while(sig_it.hasNext()) {
 
                     /* Isolar a informação do signatário */
-                    s = (SignerInformation) it.next();
+                    s = (SignerInformation) sig_it.next();
 
 
 
@@ -119,15 +130,16 @@ signerInfos.add(signerInfo);
                                                              cert, Security.getProvider(provider))) {
 
                         /* Ler o identificador do algoritmo utilizado para cifrar o resumo de mensagem */
-                        algorithm = SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID());
+                        asym_algorithm = SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID());
 
                         /* Ler os bytes da assinatura (resumo de mensagem) cifrado */
                         encrypted = s.toASN1Structure().getEncryptedDigest().getOctets();
 
                         /* Ler os atributos não assinados, sobre os quais foi produzida a assinatura recebida */
                         attributes = s.getEncodedSignedAttributes();
-                        
 
+
+/******************************************************* DEBUG *******************************************************/
 //RW_File rw = new RW_File("encrypted");
 //rw.writeFile(encrypted);
 //
@@ -147,22 +159,18 @@ signerInfos.add(signerInfo);
 //rw.writeFile(Gadgets.asHex(encrypted2));
 
 //System.out.println("Assinatura igual a correcta? " + Arrays.equals(encrypted, encrypted2));
-
+/******************************************************* DEBUG *******************************************************/
+                        
 
                         /* Criar uma nova instância da classe que vai calcular o resumo da mensagem recebida em claro */
                         dgst = new Digest(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), provider);
 
                         /* especificar o algoritmo a ser utilizado na operação de decifragem */
-                        cipher = new Cifra(algorithm);
+                        cipher = new Cifra(asym_algorithm);
 
                         // decifrar o resumo de mensagem cifrado através da chave pública lida do certificado do emissor
                         decrypted = cipher.decifrar(encrypted, cert.getPublicKey());
 
-/* Ler os bytes da mensagem (texto limpo) guardada no pacote SMIME para uma OutputStream */
-//baos = new ByteArrayOutputStream();
-//oos = new ObjectOutputStream(baos);
-//oos.writeObject(signed.getContent().getContent());
-//oos.close();
 
                         /* Calcular o resumo da mensagem (texto limpo) */
                         digest = dgst.computeMessageDigest(attributes);
@@ -171,16 +179,6 @@ signerInfos.add(signerInfo);
                          que vai ser calculado para comparar com o digest lido (após decifragem) da pacote SMIME */
                         PKCS7.DigestInfo digest_info = new PKCS7.DigestInfo(s.getDigestAlgorithmID(), digest);
 
-//Gadgets.printByteArray(digest_info.getEncoded());
-//Gadgets.printByteArray(decrypted);
-
-//System.out.println("----------------------------------------------------");
-//System.out.println(new String(baos.toByteArray()));
-//System.out.println("----------------------------------------------------");
-//System.out.println((String) signed.getContent().getContent());
-//System.out.println("----------------------------------------------------");
-//
-//baos.close();
 
                         if( MessageDigest.isEqual(decrypted, digest_info.getEncoded()) )
                             System.out.println("check");
@@ -193,9 +191,109 @@ signerInfos.add(signerInfo);
 
 PKCS7.SignedData signedData = new PKCS7.SignedData(signed.getVersion(), signed.getContentInfo(), signerInfos);
 PKCS7.ContentInfo contentInfo = new PKCS7.ContentInfo(contentType, signedData);
+//System.out.println(contentInfo.toString());
+}
+else if(msg.getDataHandler().getContentType().contains("enveloped-data")) {
 
-System.out.println(contentInfo.toString());
+enveloped = new SMIMEEnveloped(msg);
 
+//System.out.println("SIM? " + enveloped.getContentInfo().getContentType().equals(ContentInfo.envelopedData));
+
+//System.out.println("enc algorithm " + EnvelopedHelper.getSymmetricCipherName(enveloped.getEncryptionAlgOID()));
+//System.out.println("content type " + enveloped.getContentInfo().getContentType());
+
+//System.out.println("EC CT: " + enveloped.getEncryptedContent().getContentType());
+
+//ContentInfo contentInfo = enveloped.getContentInfo();
+//System.out.println(contentInfo.getContentType().toString());
+
+//System.out.println("ContentID: " + enveloped.getEncryptedContent().getContentID());
+
+
+//BASE64DecoderStream b64 = ((BASE64DecoderStream)enveloped.getEncryptedContent().getContent());
+
+//byte[] teste = new byte[b64.available()], teste2;
+
+//b64.read(teste, 0, b64.available());
+
+//System.out.println("LENGTH: " + teste.length);
+//System.out.println(new String(teste));
+
+        //enveloped = new SMIMEEnveloped((MimeBodyPart)msg.getContent());
+        /*
+        MimePart encryptedContent = enveloped.getEncryptedContent();
+        BASE64DecoderStream bds = (BASE64DecoderStream) encryptedContent.getContent();
+
+        System.out.println("Filename:"+msg.getFileName());
+        System.out.println("EAOID:"+enveloped.getEncryptionAlgOID());
+        ContentInfo contentInfo = enveloped.getContentInfo();
+
+
+        System.out.println("Content info ContentType:"+contentInfo.getContentType());
+
+        System.out.println("EC content type:"+encryptedContent.getContentType());
+
+        byte[] data = new byte[bds.available()];
+        bds.read(data, 0, bds.available());*/
+        //System.out.println("Data"+Gadgets.asHex(data));
+
+        //leitura da chave privada
+PrivateKey pkey = RW_KeyStore.getPrivateKey(ksFile, ks_type, key_alias, Gadgets.getPasswordFromConsole(System.console(), new char[] {'K','e','y','S','t','o','r','e',' ','P','a','s','s','w','o','r','d',':',' '}));
+
+
+    RecipientInformationStore recipientInfos = enveloped.getRecipientInfos();
+            //PKCS7.ContentType contentType = new PKCS7.ContentType(enveloped.getContentInfo().getContentType());
+            //ArrayList<PKCS7.EncryptedContentInfo> recipientInfos = new ArrayList<PKCS7.EncryptedContentInfo>();
+            //RecipientInformationStore ris  = enveloped.getRecipientInfos();
+            //Collection c =  (Collection) ris.getRecipients();
+
+        env_it = recipientInfos.getRecipients().iterator();
+
+
+        while(env_it.hasNext()) {
+
+            ri = (RecipientInformation) env_it.next();
+
+            asym_algorithm = SignedHelper.getEncryptionAlgName(ri.getKeyEncryptionAlgOID());
+
+//System.out.println(ri.getKeyEncryptionAlgParams().length);
+//ri.getKeyEncryptionAlgorithmParameters(provider);
+
+            MimeBodyPart        res = SMIMEUtil.toMimeBodyPart(ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider)));
+
+//System.out.println(ri.getRID().getSubjectPublicKeyAlgID());
+
+
+//teste2 = ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider));
+//System.out.println(teste2.length);
+//Cifra cifra = new Cifra(asym_algorithm);
+//cifra.decifrar(teste, pkey);
+//res = SMIMEUtil.toMimeBodyPart(teste);
+
+
+//System.out.println("ID: " + res.getContentType());
+
+        if(res.getContentType().equals("text/plain")) {
+            
+            System.out.println("\n");
+            System.out.println("---------------------------------------------------");
+            System.out.println("--------------------- Message ---------------------");
+            System.out.println("---------------------------------------------------");
+            System.out.println(res.getContent());
+        }
+        else {
+
+//msg = new MimeMessage(session, res.getInputStream());
+//System.out.println(msg.getSize());
+                
+        }
+    }
+
+}
+
+
+
+                
             }
             catch (Exception ex) {
 
