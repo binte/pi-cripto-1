@@ -39,6 +39,14 @@ public class SignerInfo {
         this.encryptedDigest = encryptedDigest;
         this.unauthenticatedAttributes = unauthenticatedAttributes;
     }
+    
+    public int getVersion(){return version;}
+    public IssuerAndSerialNumber getIssuerAndSerialNumber(){return  isn;}
+    public AlgorithmIdentifier getDgstAlgIO(){return dgstAlgID;}
+    public Attributes getAuthenticatedAttributes(){return authenticatedAttributes;}
+    public AlgorithmIdentifier getDgstEbcryptionAlgorithm(){return dgstEncryptionAlgorithm;}
+    public byte[] getEncryptedDigest(){return encryptedDigest;}
+    public Attributes getUnauthenticatedAttributes(){return unauthenticatedAttributes;}
 
 
     @Override

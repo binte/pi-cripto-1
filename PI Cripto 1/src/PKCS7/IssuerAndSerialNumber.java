@@ -22,7 +22,13 @@ public class IssuerAndSerialNumber {
         this.issuer = issuer;
         this.serialNumber = serialNumber;
     }
-
+    
+    /**
+     * Gets
+     * @return 
+     */
+    public X500Principal getIssuer(){return issuer;}
+    public CertificateSerialNumber getSerialNumber(){return serialNumber;}
 
     @Override
     public String toString() {

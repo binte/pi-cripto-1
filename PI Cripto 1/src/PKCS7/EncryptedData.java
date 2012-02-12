@@ -48,6 +48,10 @@ public class EncryptedData extends Content{
         encryptedContentInfo = eci;
     }
     
+    public int getVersion(){return version;}
+    public EncryptedContentInfo getEncryptedContentInfo(){return encryptedContentInfo;}
+    public String getUnprotectedAttributes(){return unprotectredAttrs;}
+            
     public String toString(){
         
         StringBuilder st = new StringBuilder("EncryptedData ::= SEQUENCE { version");

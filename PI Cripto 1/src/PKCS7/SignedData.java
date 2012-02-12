@@ -36,8 +36,15 @@ public class SignedData extends Content {
         this.crls = null;
         this.signerInfos = signerInfos;
     }
-
-
+    
+    public int getVersion(){return version;}
+    public Collection<AlgorithmIdentifier> getDgstAlgorithmIdentifiers(){return dgstAlgIDs;}
+    public ContentInfo getContentInfo(){return contentInfo;}
+    public Collection<ExtendedCertificateOrCertificate> getCertificates(){return certificates;}
+    public Collection<CRL> getCrls(){return crls;}
+    public Collection<SignerInfo> getSignerInfos(){return signerInfos;}
+    
+    
     @Override
     public String toString() {
 
