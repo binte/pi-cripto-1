@@ -3,6 +3,8 @@ package signedData;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class Cifra {
@@ -91,4 +93,26 @@ public class Cifra {
 
         return secret_text;
     }
+    
+    public byte[] decifrar(SecretKeySpec key, byte[] criptograma, byte[] iv) throws Exception{
+
+        byte [] mensagem = null;
+
+        
+        /* Criar um objecto Cipher, que implemente uma dada transformação. A transformação é uma string na forma:
+
+            "algoritmo/modo/padding" ou
+            "algoritmo"
+         */
+        Cipher cp = Cipher.getInstance(this.algorithm);
+
+        // Inicializar o objecto do tipo Cipher criado em cima, no modo de desencriptar com a chave privada
+        cp.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+
+        // Desencriptar o array de bytes encriptado recebido pela função num único passo
+        mensagem = cp.doFinal(criptograma);
+
+        return mensagem;
+    }
+
 }
