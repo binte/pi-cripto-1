@@ -2,6 +2,7 @@ package signedData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
@@ -13,6 +14,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -71,7 +74,7 @@ public class Main {
             try {
                 
                 session = Session.getDefaultInstance(System.getProperties());
-
+               
                 msg = new MimeMessage(session, new FileInputStream(args[0]));
 
 
@@ -98,7 +101,6 @@ ArrayList<PKCS7.SignerInfo> signerInfos = new ArrayList<PKCS7.SignerInfo>();
 
                     /* Isolar a informação do signatário */
                     s = (SignerInformation) sig_it.next();
-
 
 
 
@@ -253,9 +255,35 @@ PrivateKey pkey = RW_KeyStore.getPrivateKey(ksFile, ks_type, key_alias, Gadgets.
 
 
 
-/* Content cifrado */
+/* Content cifrado 
 MimePart encryptedContent = enveloped.getEncryptedContent();
+InputStream is =encryptedContent.getInputStream();
+byte[] aux = new byte[is.available()];
+is.read(aux, 0, is.available());
+
+System.out.println("Content");
+System.out.println(new String(aux));
+
+System.out.println("!!");
 RW_File rw = new RW_File("Signer/signer_key.der");
+
+//Leitura da chave secreta
+String algorithm = "AES/CBC/PKCS7Padding";
+byte[] bytekey = rw.readByteFile();
+SecretKeySpec sps = new SecretKeySpec(bytekey, algorithm);
+
+//Leitura do IV
+rw.setFile("Signer/iv.hex");
+byte[]iv = rw.readByteFile();
+System.out.println(new String(iv));
+IvParameterSpec ivs = new IvParameterSpec(iv);
+
+
+Cifra cifra = new Cifra(algorithm);
+decrypted = cifra.decifrar(sps, aux, iv);
+System.out.println("Decrypted\n"+new String(decrypted));*/
+
+
 
 
 

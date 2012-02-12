@@ -27,6 +27,7 @@ import javax.mail.internet.MimePart;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.asn1.cms.EnvelopedData;
 import org.bouncycastle.asn1.cms.RecipientInfo;
 import org.bouncycastle.cms.KEKRecipientInformation;
 import org.bouncycastle.cms.KeyTransRecipientInformation;
@@ -78,7 +79,7 @@ public class Main {
         RecipientInformation ri;
         MimePart mp;
         
-        if(args.length == 2){
+        if(args.length == 3){
         
         //Inicializar a sessão    
         session = Session.getDefaultInstance(System.getProperties());
@@ -89,6 +90,10 @@ public class Main {
         rw = new RW_File(args[0]);
         byte[]file = rw.readByteFile();
         //ASN1Sequence asn1seq = ASN1Sequence.getInstance(file);
+        
+        rw.setFile(args[2]);
+        byte[] bytekey = rw.readByteFile();
+        System.out.println(new String(Gadgets.asHex(bytekey)));
         
         enveloped = new SMIMEEnveloped(msg);
 
@@ -145,6 +150,7 @@ System.out.println("LENGTH: " + teste.length);
         
         Iterator it = recipientInfos.getRecipients().iterator();
                 
+        
         
         while(it.hasNext()){
             

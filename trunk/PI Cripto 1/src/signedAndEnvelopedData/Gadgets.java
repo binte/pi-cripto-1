@@ -170,7 +170,7 @@ public class Gadgets {
             fileReader.close();
         }
     }
-
+    
     /**
      * Converter uma String em formato hexadecimal num array de bytes
      *
@@ -182,11 +182,11 @@ public class Gadgets {
         
         int len = s.length(), i;
         byte[] data = new byte[len / 2];
-        
         for (i=0; i<len; i+=2) {
             
             data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
                                  + Character.digit(s.charAt(i+1), 16));
+            
         }
         
         return data;
