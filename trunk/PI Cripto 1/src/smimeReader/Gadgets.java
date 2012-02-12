@@ -1,4 +1,4 @@
-package signedData;
+package smimeReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Console;
@@ -9,13 +9,6 @@ import java.io.IOException;
 import java.security.KeyPair;
 
 import org.bouncycastle.asn1.ASN1OutputStream;
-import org.bouncycastle.asn1.DERObjectIdentifier;
-import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
-import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
-import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.teletrust.TeleTrusTObjectIdentifiers;
-import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 

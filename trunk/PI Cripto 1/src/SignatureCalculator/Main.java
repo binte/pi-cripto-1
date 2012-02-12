@@ -14,9 +14,9 @@ import javax.mail.internet.MimeMultipart;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.mail.smime.SMIMESigned;
-import signedData.Gadgets;
-import signedData.RW_File;
-import signedData.Sign;
+import smimeReader.Gadgets;
+import smimeReader.RW_File;
+import smimeReader.Sign;
 
 
 public class Main {
@@ -57,7 +57,7 @@ public class Main {
                 s = (SignerInformation) it.next();
 
                 
-                sig = new Sign(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), signedData.SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID()), "BC");
+                sig = new Sign(smimeReader.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), smimeReader.SignedHelper.getEncryptionAlgName(s.getEncryptionAlgOID()), "BC");
 
 RW_File rw = new RW_File("Signer/message.txt");
 KeyPair kp = Gadgets.readKeyPair(new File("Signer/signer_key.pem"));

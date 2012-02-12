@@ -1,4 +1,4 @@
-package signedData;
+package smimeReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -166,7 +166,7 @@ signerInfos.add(signerInfo);
                         
 
                         /* Criar uma nova instância da classe que vai calcular o resumo da mensagem recebida em claro */
-                        dgst = new Digest(signedData.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), provider);
+                        dgst = new Digest(smimeReader.SignedHelper.getDigestAlgName(s.getDigestAlgOID()), provider);
 
                         /* especificar o algoritmo a ser utilizado na operação de decifragem */
                         cipher = new Cifra(asym_algorithm);

@@ -1,4 +1,4 @@
-package signedData;
+package smimeReader;
 
 import org.bouncycastle.openssl.PasswordFinder;
 

@@ -1,4 +1,4 @@
-package signedData;
+package smimeReader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;

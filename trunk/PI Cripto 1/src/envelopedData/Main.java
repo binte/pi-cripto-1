@@ -37,11 +37,11 @@ import org.bouncycastle.cms.RecipientInformationStore;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMEUtil;
-import signedData.Cifra;
-import signedData.RW_File;
+import smimeReader.Cifra;
+import smimeReader.RW_File;
 import signedAndEnvelopedData.Gadgets;
-import signedData.EnvelopedHelper;
-import signedData.SignedHelper;
+import smimeReader.EnvelopedHelper;
+import smimeReader.SignedHelper;
 import sun.security.x509.CertificateSerialNumber;
 
 //import signedAndEnvelopedData.RW_KeyStore;

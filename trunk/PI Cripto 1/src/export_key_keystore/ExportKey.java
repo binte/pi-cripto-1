@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 
-import signedData.Gadgets;
-import signedData.RW_File;
+import smimeReader.Gadgets;
+import smimeReader.RW_File;
 
 public class ExportKey {
 
