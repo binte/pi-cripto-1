@@ -17,6 +17,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimePart;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
@@ -250,6 +251,17 @@ PrivateKey pkey = RW_KeyStore.getPrivateKey(ksFile, ks_type, key_alias, Gadgets.
         env_it = recipientInfos.getRecipients().iterator();
 
 
+
+
+/* Content cifrado */
+MimePart encryptedContent = enveloped.getEncryptedContent();
+RW_File rw = new RW_File("Signer/signer_key.der");
+
+
+
+
+
+
         while(env_it.hasNext()) {
 
             ri = (RecipientInformation) env_it.next();
@@ -259,7 +271,7 @@ PrivateKey pkey = RW_KeyStore.getPrivateKey(ksFile, ks_type, key_alias, Gadgets.
 //System.out.println(ri.getKeyEncryptionAlgParams().length);
 //ri.getKeyEncryptionAlgorithmParameters(provider);
 
-            MimeBodyPart        res = SMIMEUtil.toMimeBodyPart(ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider)));
+            MimeBodyPart res = SMIMEUtil.toMimeBodyPart(ri.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider(provider)));
 
 //System.out.println(ri.getRID().getSubjectPublicKeyAlgID());
 
