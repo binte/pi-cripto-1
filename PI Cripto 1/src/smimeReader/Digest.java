@@ -12,7 +12,7 @@
   *
  **/
 
-package signedData;
+package smimeReader;
 
 import java.security.MessageDigest;
 

@@ -13,7 +13,7 @@ package PKCS7;
 
 import java.util.StringTokenizer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import signedData.Gadgets;
+import smimeReader.Gadgets;
 
 
 public class ContentType {

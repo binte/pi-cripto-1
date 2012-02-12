@@ -1,4 +1,4 @@
-package signedData;
+package smimeReader;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
