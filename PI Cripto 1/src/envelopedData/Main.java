@@ -71,7 +71,6 @@ public class Main {
         String algorithm;
         
         //Variáveis SMIME
-        Properties props;
         Session session;
         MimeMessage msg;
         SMIMEEnveloped enveloped;
@@ -82,8 +81,7 @@ public class Main {
         if(args.length == 2){
         
         //Inicializar a sessão    
-        props = System.getProperties();
-        session = Session.getDefaultInstance(props);
+        session = Session.getDefaultInstance(System.getProperties());
         
         //Criação da MIMEMessage
         
